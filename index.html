@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MX 7-0 · Draft de Campeones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch-900:#0a2e22;
+    --pitch-700:#123c2c;
+    --pitch-600:#1a4f39;
+    --line: rgba(245,243,236,0.14);
+    --chalk:#f5f3ec;
+    --chalk-dim:#c9d6cd;
+    --gold:#d4a72c;
+    --gold-bright:#f0c34a;
+    --red:#b3282d;
+    --red-bright:#d63b3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(212,167,44,0.10), transparent 40%),
+      repeating-linear-gradient(90deg, var(--pitch-700) 0 90px, var(--pitch-600) 90px 180px),
+      var(--pitch-900);
+    color:var(--chalk);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    padding-bottom:80px;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  /* HEADER / SCOREBOARD */
+  header{
+    padding:40px 20px 28px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(0,0,0,0.25), transparent);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:clamp(40px, 9vw, 76px);
+    letter-spacing:0.01em;
+    margin:0;
+    line-height:0.95;
+    color:var(--chalk);
+    text-shadow: 0 4px 0 rgba(0,0,0,0.35);
+  }
+  h1 span{color:var(--gold-bright);}
+  .scoreboard{
+    display:inline-flex;
+    align-items:center;
+    gap:14px;
+    margin-top:18px;
+    background:#08221a;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:10px 22px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .scoreboard .digit{
+    font-family:'Anton', sans-serif;
+    font-size:34px;
+    color:var(--gold-bright);
+    min-width:34px;
+    text-align:center;
+  }
+  .scoreboard .dash{color:var(--chalk-dim); font-size:20px;}
+  .scoreboard .lbl{font-size:11px; color:var(--chalk-dim); letter-spacing:0.12em; text-transform:uppercase;}
+  .subhead{color:var(--chalk-dim); max-width:520px; margin:16px auto 0; font-size:15px; line-height:1.5;}
+
+  /* SECTIONS */
+  section{padding:32px 0;}
+  .section-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .section-title::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  /* SETUP */
+  .formation-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .formation-btn{
+    background:var(--pitch-700);
+    border:1px solid var(--line);
+    color:var(--chalk);
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    padding:12px 18px;
+    border-radius:4px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .formation-btn:hover{border-color:var(--gold);}
+  .formation-btn.active{background:var(--gold); color:#1a1200; border-color:var(--gold); font-weight:700;}
+
+  /* PITCH */
+  .pitch-layout{display:flex; gap:16px; align-items:flex-start;}
+  .pitch-layout .pitch{flex:1; min-width:0;}
+  @media (max-width:680px){.pitch-layout{flex-direction:column;}}
+  .squad-list{
+    width:230px; flex-shrink:0;
+    background:var(--pitch-700);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+  }
+  @media (max-width:680px){.squad-list{width:100%;}}
+  .squad-list .sq-title{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold-bright); margin-bottom:10px;}
+  .squad-row{display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .squad-row:last-of-type{border-bottom:none;}
+  .squad-row .sq-name{font-weight:600;}
+  .squad-row .sq-pos{font-family:'JetBrains Mono', monospace; font-size:9px; color:var(--chalk-dim); display:block;}
+  .squad-row .sq-rat{font-family:'Anton', sans-serif; font-size:16px; color:var(--gold-bright);}
+  .squad-avg{
+    margin-top:12px; padding-top:12px; border-top:1px solid var(--gold);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .squad-avg .avg-lbl{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--chalk-dim);}
+  .squad-avg .avg-val{font-family:'Anton', sans-serif; font-size:30px; color:var(--gold-bright);}
+  .squad-empty{color:var(--chalk-dim); font-size:13px; font-style:italic;}
+  .crest-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius:50%; color:#fff; font-family:'JetBrains Mono', monospace;
+    font-weight:700; flex-shrink:0; letter-spacing:-0.02em;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.18) inset, 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .pitch{
+    position:relative;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 20%,
+      var(--pitch-700);
+    border:2px solid var(--line);
+    border-radius:10px;
+    padding:22px 16px;
+    display:grid;
+    gap:10px;
+  }
+  .pitch-row{display:flex; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .slot{
+    width:86px; min-height:64px;
+    background:rgba(8,34,26,0.85);
+    border:1.5px dashed var(--line);
+    border-radius:8px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:6px 4px;
+    text-align:center;
+  }
+  .slot.filled{border-style:solid; border-color:var(--gold);}
+  .slot .pos-tag{font-family:'JetBrains Mono', monospace; font-size:9px; color:var(--chalk-dim); letter-spacing:0.08em;}
+  .slot .crest-badge{margin:3px 0;}
+  .slot .p-name{font-size:11px; font-weight:700; line-height:1.2; margin-top:3px;}
+  .slot .p-team{font-size:9px; color:var(--gold-bright); margin-top:2px;}
+
+  /* DRAFT CONTROLS */
+  .draft-panel{
+    background:var(--pitch-700);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+  }
+  .draft-actions{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:13px 22px;
+    border-radius:5px;
+    border:1px solid var(--line);
+    cursor:pointer;
+    background:var(--pitch-600);
+    color:var(--chalk);
+    transition:all .15s ease;
+  }
+  .btn.primary{background:var(--gold); color:#1a1200; border-color:var(--gold); font-weight:700;}
+  .btn.primary:hover{background:var(--gold-bright);}
+  .btn:disabled{opacity:0.35; cursor:not-allowed;}
+  .btn.ghost:hover{border-color:var(--chalk-dim);}
+  .btn.danger{border-color:var(--red);}
+  .btn.danger:hover{background:var(--red);}
+
+  .roll-card{
+    display:flex; align-items:center; gap:16px;
+    background:#08221a;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px;
+    margin-bottom:16px;
+  }
+  .roll-card .crest{
+    width:52px; height:52px; border-radius:50%;
+    background:var(--gold);
+    color:#1a1200;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Anton', sans-serif;
+    font-size:20px;
+    flex-shrink:0;
+  }
+  .roll-card .info .team{font-family:'Anton', sans-serif; font-size:22px; letter-spacing:0.01em;}
+  .roll-card .info .tourney{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold-bright);}
+
+  .player-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  @media (max-width:520px){.player-grid{grid-template-columns:1fr;}}
+  .player-card{
+    background:var(--pitch-600);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:12px 14px;
+    cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center;
+    transition:all .12s ease;
+  }
+  .player-card:hover{border-color:var(--gold); transform:translateY(-1px);}
+  .player-card .pname{font-weight:700; font-size:14px;}
+  .player-card .ppos{font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--chalk-dim); margin-top:2px;}
+  .player-card .prat{font-family:'Anton', sans-serif; font-size:20px; color:var(--gold-bright);}
+  .hint{color:var(--chalk-dim); font-size:13px; font-style:italic;}
+
+  /* RESULTS */
+  .results-list{display:flex; flex-direction:column; gap:8px;}
+  .match-row{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--pitch-700);
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold);
+    border-radius:6px;
+    padding:12px 16px;
+  }
+  .match-row.loss{border-left-color:var(--red);}
+  .match-row .stage{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--chalk-dim); text-transform:uppercase; letter-spacing:0.08em;}
+  .match-row .vs{font-size:14px; margin-top:2px;}
+  .match-row .score{font-family:'Anton', sans-serif; font-size:24px; color:var(--gold-bright);}
+
+  .verdict{
+    margin-top:18px;
+    text-align:center;
+    padding:28px 20px;
+    border-radius:10px;
+    border:1px solid var(--gold);
+    background:radial-gradient(circle at 50% 0%, rgba(212,167,44,0.15), transparent 70%);
+  }
+  .verdict h2{font-family:'Anton', sans-serif; font-size:clamp(28px,6vw,48px); margin:0 0 6px; color:var(--gold-bright);}
+  .verdict p{color:var(--chalk-dim); margin:0; font-size:14px;}
+
+  footer{text-align:center; color:var(--chalk-dim); font-size:12px; padding:30px 20px 0; font-family:'JetBrains Mono', monospace;}
+  a{color:var(--gold-bright);}
+
+  /* LIVE MATCH VIEWER */
+  .live-match{
+    background:#08221a;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .live-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .live-stage{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.1em;}
+  .live-leg{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--chalk-dim);}
+  .live-score{
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    font-family:'Anton', sans-serif; font-size:44px; margin:10px 0;
+  }
+  .live-score .team-name{font-family:'Work Sans', sans-serif; font-weight:700; font-size:13px; max-width:150px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .live-clock{
+    text-align:center; font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--chalk-dim); margin-bottom:10px;
+  }
+  .live-clock .bar{height:4px; background:var(--pitch-600); border-radius:2px; margin-top:6px; overflow:hidden;}
+  .live-clock .bar-fill{height:100%; background:var(--gold); width:0%; transition:width .15s linear;}
+  .live-feed{display:flex; flex-direction:column; gap:6px; min-height:20px;}
+  .live-event{font-size:13px; display:flex; gap:8px; align-items:center; animation:fadein .3s ease;}
+  .live-event .min{font-family:'JetBrains Mono', monospace; color:var(--gold-bright); min-width:34px;}
+  @keyframes fadein{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+  @keyframes goalShake{
+    0%{transform:translate(0,0) rotate(0);}
+    12%{transform:translate(-3px,-1px) rotate(-3deg);}
+    24%{transform:translate(4px,1px) rotate(3deg);}
+    36%{transform:translate(-4px,0) rotate(-2deg);}
+    48%{transform:translate(3px,-1px) rotate(2deg);}
+    60%{transform:translate(-2px,1px) rotate(-1deg);}
+    75%{transform:translate(2px,0) rotate(1deg);}
+    100%{transform:translate(0,0) rotate(0);}
+  }
+  .goal-shake{
+    display:inline-block;
+    font-weight:800;
+    color:var(--gold-bright);
+    animation: goalShake 0.6s ease;
+    text-shadow:0 0 8px rgba(240,195,74,0.6);
+  }
+  .agg-note{text-align:center; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--chalk-dim); margin-top:8px;}
+  .elim-banner{
+    text-align:center; padding:22px; border-radius:10px; margin-top:12px;
+    border:1px solid var(--red); background:radial-gradient(circle at 50% 0%, rgba(179,40,45,0.18), transparent 70%);
+  }
+  .elim-banner h2{font-family:'Anton', sans-serif; color:var(--red-bright); margin:0 0 6px; font-size:clamp(24px,5vw,36px);}
+  .stage-log-title{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--chalk-dim); text-transform:uppercase; letter-spacing:0.1em; margin:14px 0 8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Draft mundialista · Liga MX</div>
+  <h1>MX <span>7</span>-<span>0</span></h1>
+  <div class="scoreboard">
+    <div class="lbl">Meta</div>
+    <div class="digit" id="sb-w">7</div>
+    <div class="dash">—</div>
+    <div class="digit" id="sb-l">0</div>
+  </div>
+  <p class="subhead">Sortea campeones de la era moderna de la Liga MX (2002–2025), arma tu once histórico y simula un torneo. ¿Puedes cerrarlo 7 a 0?</p>
+</header>
+
+<div class="wrap">
+
+  <section id="setup-section">
+    <div class="section-title">01 · Formación</div>
+    <div class="formation-row" id="formation-row"></div>
+  </section>
+
+  <section>
+    <div class="section-title">02 · Tu once</div>
+    <div class="pitch-layout">
+      <div class="pitch" id="pitch"></div>
+      <div class="squad-list" id="squad-list"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">03 · Draft</div>
+    <div class="draft-panel">
+      <div class="draft-actions">
+        <button class="btn primary" id="roll-btn">🎲 Tirar y sortear campeón</button>
+        <button class="btn ghost" id="reroll-btn" disabled>Repetir tirada (<span id="reroll-count">3</span>)</button>
+        <button class="btn danger" id="reset-btn">Reiniciar</button>
+      </div>
+      <div id="roll-area"><p class="hint">Tira el dado para que aparezca un plantel campeón. Elegirás un jugador real de esa plantilla para tu formación.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">04 · Torneo</div>
+    <div class="draft-panel">
+      <div class="draft-actions" id="speed-row">
+        <span class="hint" style="align-self:center;">Velocidad:</span>
+        <button class="formation-btn speed-btn" data-speed="slow">Lenta</button>
+        <button class="formation-btn speed-btn active" data-speed="normal">Normal</button>
+        <button class="formation-btn speed-btn" data-speed="fast">Rápida</button>
+      </div>
+      <div class="draft-actions">
+        <button class="btn primary" id="sim-btn" disabled>Iniciar torneo</button>
+        <button class="btn ghost" id="skip-match-btn" style="display:none;">Saltar partido ⏭</button>
+        <button class="btn ghost" id="skip-all-btn" style="display:none;">Saltar al resultado final ⏩</button>
+        <button class="btn ghost" id="next-match-btn" style="display:none;">Siguiente partido ▶</button>
+      </div>
+      <div id="sim-area"><p class="hint">Completa las 11 posiciones para poder simular. Formato: repechaje (partido único) → cuartos, semifinal y final a ida y vuelta.</p></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Datos: campeones y jugadores destacados de la Liga MX 2002–2025 (set inicial, ampliable) · Prototipo — no oficial</footer>
+
+<script>
+/* ---------------- DATA ---------------- */
+const CHAMPIONS = [
+  // ==========================================
+  // ERA 1: INICIOS DE LOS TORNEOS CORTOS (1996-2000)
+  // ==========================================
+  {
+    team: "Santos Laguna",
+    tourney: "Invierno 1996",
+    players: [
+      { name: "José Miguel", pos: "POR", rat: 80 },
+      { name: "Guadalupe Rubio", pos: "DEF", rat: 77 },
+      { name: "Pedro Muñoz", pos: "DEF", rat: 78 },
+      { name: "José Guadalupe Flores", pos: "DEF", rat: 76 },
+      { name: "Francisco Gabriel de Anda", pos: "DEF", rat: 79 },
+      { name: "Miguel España", pos: "MED", rat: 81 },
+      { name: "Benjamin Galindo", pos: "MED", rat: 85 },
+      { name: "Nicolás Ramírez", pos: "MED", rat: 78 },
+      { name: "Gabriel Caballero", pos: "MED", rat: 82 },
+      { name: "Jared Borgetti", pos: "DEL", rat: 85 },
+      { name: "Wagner de Souza", pos: "DEL", rat: 78 }
+    ]
+  },
+  {
+    team: "Chivas",
+    tourney: "Verano 1997",
+    players: [
+      { name: "Martín Zúñiga", pos: "POR", rat: 80 },
+      { name: "Claudio Suárez", pos: "DEF", rat: 86 },
+      { name: "Joel Sánchez", pos: "DEF", rat: 81 },
+      { name: "Camilo Romero", pos: "DEF", rat: 79 },
+      { name: "Noe Zárate", pos: "DEF", rat: 77 },
+      { name: "Alberto Coyote", pos: "MED", rat: 83 },
+      { name: "Ramón Ramírez", pos: "MED", rat: 86 },
+      { name: "Paulo César Chávez", pos: "MED", rat: 80 },
+      { name: "Manuel Martínez", pos: "MED", rat: 78 },
+      { name: "Gustavo Nápoles", pos: "DEL", rat: 82 },
+      { name: "Ignacio Vázquez", pos: "DEL", rat: 79 }
+    ]
+  },
+  {
+    team: "Cruz Azul",
+    tourney: "Invierno 1997",
+    players: [
+      { name: "Óscar Pérez", pos: "POR", rat: 82 },
+      { name: "Juan Reynoso", pos: "DEF", rat: 84 },
+      { name: "José Luis Sixtos", pos: "DEF", rat: 78 },
+      { name: "Guadalupe Castañeda", pos: "DEF", rat: 79 },
+      { name: "Omar Rodríguez", pos: "DEF", rat: 77 },
+      { name: "Carlos Barra", pos: "MED", rat: 79 },
+      { name: "Joaquín Moreno", pos: "MED", rat: 76 },
+      { name: "Héctor Adomaitis", pos: "MED", rat: 82 },
+      { name: "Benjamin Galindo", pos: "MED", rat: 84 },
+      { name: "Carlos Hermosillo", pos: "DEL", rat: 87 },
+      { name: "Francisco Palencia", pos: "DEL", rat: 83 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Verano 1998",
+    players: [
+      { name: "Martín Zúñiga", pos: "POR", rat: 79 },
+      { name: "Alberto Macías", pos: "DEF", rat: 81 },
+      { name: "Omar Blanco", pos: "DEF", rat: 80 },
+      { name: "Salvador Carmona", pos: "DEF", rat: 83 },
+      { name: "Enrique Alfaro", pos: "MED", rat: 79 },
+      { name: "David Rangel", pos: "MED", rat: 80 },
+      { name: "Fabian Estay", pos: "MED", rat: 86 },
+      { name: "Antonio Taboada", pos: "DEF", rat: 77 },
+      { name: "Víctor Ruiz", pos: "MED", rat: 81 },
+      { name: "José Saturnino Cardozo", pos: "DEL", rat: 89 },
+      { name: "José Manuel Abundis", pos: "DEL", rat: 82 }
+    ]
+  },
+  {
+    team: "Necaxa",
+    tourney: "Invierno 1998",
+    players: [
+      { name: "Adolfo Ríos", pos: "POR", rat: 83 },
+      { name: "Markus López", pos: "DEF", rat: 78 },
+      { name: "Sergio Almaguer", pos: "DEF", rat: 81 },
+      { name: "José María Higareda", pos: "DEF", rat: 79 },
+      { name: "Salvador Cabrera", pos: "DEF", rat: 78 },
+      { name: "José Manuel de la Torre", pos: "MED", rat: 81 },
+      { name: "Alex Aguinaga", pos: "MED", rat: 87 },
+      { name: "Luis Hernández", pos: "DEL", rat: 85 },
+      { name: "Sergio Vázquez", pos: "DEL", rat: 79 },
+      { name: "Carlos Hermosillo", pos: "DEL", rat: 83 },
+      { name: "Ricardo Peláez", pos: "DEL", rat: 80 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Verano 1999",
+    players: [
+      { name: "Hernán Cristante", pos: "POR", rat: 84 },
+      { name: "Alberto Macías", pos: "DEF", rat: 81 },
+      { name: "Omar Blanco", pos: "DEF", rat: 80 },
+      { name: "Salvador Carmona", pos: "DEF", rat: 84 },
+      { name: "David Rangel", pos: "MED", rat: 81 },
+      { name: "Rafael García", pos: "MED", rat: 80 },
+      { name: "Fabian Estay", pos: "MED", rat: 86 },
+      { name: "Enrique Alfaro", pos: "MED", rat: 80 },
+      { name: "Víctor Ruiz", pos: "MED", rat: 82 }, 
+      { name: "José Saturnino Cardozo", pos: "DEL", rat: 91 },
+      { name: "José Manuel Abundis", pos: "DEL", rat: 83 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Invierno 1999",
+    players: [
+      { name: "Ignacio Palou", pos: "POR", rat: 78 },
+      { name: "Manuel Vidrio", pos: "DEF", rat: 80 },
+      { name: "Alberto Rodríguez", pos: "DEF", rat: 79 },
+      { name: "Octavio Valdez", pos: "DEF", rat: 79 },
+      { name: "Marcelino Bernal", pos: "MED", rat: 80 },
+      { name: "Cesáreo Victorino", pos: "MED", rat: 81 },
+      { name: "Benjamin Galindo", pos: "MED", rat: 82 },
+      { name: "Gabriel Caballero", pos: "MED", rat: 83 },
+      { name: "Alfonso Sosa", pos: "MED", rat: 78 },
+      { name: "Alejandro Glaría", pos: "DEL", rat: 82 },
+      { name: "Pablo Hernán Gómez", pos: "DEL", rat: 84 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Verano 2000",
+    players: [
+      { name: "Hernán Cristante", pos: "POR", rat: 85 },
+      { name: "Alberto Macías", pos: "DEF", rat: 82 },
+      { name: "Omar Blanco", pos: "DEF", rat: 81 },
+      { name: "Salvador Carmona", pos: "DEF", rat: 85 },
+      { name: "David Rangel", pos: "MED", rat: 82 },
+      { name: "Rafael García", pos: "MED", rat: 81 },
+      { name: "Manoel Ferreira", pos: "MED", rat: 80 },
+      { name: "Víctor Ruiz", pos: "MED", rat: 83 },
+      { name: "Carlos María Morales", pos: "DEL", rat: 84 },
+      { name: "José Saturnino Cardozo", pos: "DEL", rat: 93 },
+      { name: "José Manuel Abundis", pos: "DEL", rat: 82 }
+    ]
+  },
+  {
+    team: "Monarcas Morelia",
+    tourney: "Invierno 2000",
+    players: [
+      { name: "Ángel Comizzo", pos: "POR", rat: 83 },
+      { name: "Heriberto Ramón Morales", pos: "DEF", rat: 81 },
+      { name: "Hugo Chávez", pos: "DEF", rat: 78 },
+      { name: "Omar Trujillo", pos: "DEF", rat: 79 },
+      { name: "Darío Franco", pos: "DEF", rat: 82 },
+      { name: "Jorge Almirón", pos: "MED", rat: 82 },
+      { name: "Carlos Morales", pos: "MED", rat: 80 },
+      { name: "Mario Ruiz", pos: "MED", rat: 78 },
+      { name: "Antonio Noriega", pos: "MED", rat: 81 },
+      { name: "Alex Fernandes", pos: "DEL", rat: 84 },
+      { name: "Carlos Pavón", pos: "DEL", rat: 83 }
+    ]
+  },
+
+  // ==========================================
+  // ERA 2: ÉPOCA DE RESTRUCTURACIÓN Y BICAMPEONATOS (2001-2005)
+  // ==========================================
+  {
+    team: "Santos Laguna",
+    tourney: "Verano 2001",
+    players: [
+      { name: "Adrián Martínez", pos: "POR", rat: 81 },
+      { name: "Hector Altamirano", pos: "DEF", rat: 81 },
+      { name: "Luis Romero", pos: "DEF", rat: 78 },
+      { name: "Miguel García", pos: "DEF", rat: 77 },
+      { name: "Carlos Cariño", pos: "MED", rat: 79 },
+      { name: "Mariano Trujillo", pos: "MED", rat: 79 },
+      { name: "Johan Rodríguez", pos: "MED", rat: 82 },
+      { name: "Rodrigo Ruiz", pos: "MED", rat: 87 },
+      { name: "Joaquín Reyes", pos: "MED", rat: 78 },
+      { name: "Jared Borgetti", pos: "DEL", rat: 88 },
+      { name: "Robson Luiz", pos: "DEL", rat: 80 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Invierno 2001",
+    players: [
+      { name: "Miguel Calero", pos: "POR", rat: 84 },
+      { name: "Manuel Vidrio", pos: "DEF", rat: 81 },
+      { name: "Francisco Gabriel de Anda", pos: "DEF", rat: 82 },
+      { name: "Alberto Rodríguez", pos: "DEF", rat: 80 },
+      { name: "Marco Sánchez Yacuta", pos: "DEF", rat: 78 },
+      { name: "Alfonso Sosa", pos: "MED", rat: 79 },
+      { name: "Jaime Correa", pos: "MED", rat: 80 },
+      { name: "Gabriel Caballero", pos: "MED", rat: 82 },
+      { name: "Andrés Chitiva", pos: "MED", rat: 83 },
+      { name: "Walter Silvani", pos: "DEL", rat: 84 },
+      { name: "Sergio Santana", pos: "DEL", rat: 78 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Verano 2002",
+    players: [
+      { name: "Adolfo Ríos", pos: "POR", rat: 83 },
+      { name: "Duilio Davino", pos: "DEF", rat: 82 },
+      { name: "Ricardo Rojas", pos: "DEF", rat: 81 },
+      { name: "José Antonio Castro", pos: "DEF", rat: 79 },
+      { name: "Carlos Infante", pos: "DEF", rat: 76 },
+      { name: "Pável Pardo", pos: "MED", rat: 85 },
+      { name: "Frankie Oviedo", pos: "MED", rat: 82 },
+      { name: "Raúl Rodrigo Lara", pos: "MED", rat: 79 },
+      { name: "Hugo Norberto Castillo", pos: "MED", rat: 83 },
+      { name: "Christian Patiño", pos: "DEL", rat: 80 },
+      { name: "Iván Zamorano", pos: "DEL", rat: 86 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Apertura 2002",
+    players: [
+      { name: "Hernán Cristante", pos: "POR", rat: 85 },
+      { name: "Salvador Carmona", pos: "DEF", rat: 85 },
+      { name: "Maximiliano Cuberas", pos: "DEF", rat: 79 },
+      { name: "Ariel Franco", pos: "DEF", rat: 77 },
+      { name: "Emilio Hassan Viades", pos: "DEF", rat: 78 },
+      { name: "Israel López", pos: "MED", rat: 82 },
+      { name: "Rafael García", pos: "MED", rat: 82 },
+      { name: "Sinha", pos: "MED", rat: 86 },
+      { name: "Vicente Sánchez", pos: "DEL", rat: 85 },
+      { name: "José Saturnino Cardozo", pos: "DEL", rat: 93 },
+      { name: "Edgar González", pos: "DEL", rat: 77 }
+    ]
+  },
+  {
+    team: "Monterrey",
+    tourney: "Clausura 2003",
+    players: [
+      { name: "Ricardo Martínez", pos: "POR", rat: 80 },
+      { name: "Pablo Rotchen", pos: "DEF", rat: 82 },
+      { name: "Flavio Rogerio", pos: "DEF", rat: 81 },
+      { name: "Ismael Rodríguez", pos: "DEF", rat: 78 },
+      { name: "Paulo César Chávez", pos: "DEF", rat: 79 },
+      { name: "Hector Castro", pos: "MED", rat: 79 },
+      { name: "Luis Ernesto Pérez", pos: "MED", rat: 84 },
+      { name: "Walter Erviti", pos: "MED", rat: 83 },
+      { name: "Jesús Arellano", pos: "MED", rat: 85 },
+      { name: "Guillermo Franco", pos: "DEL", rat: 84 },
+      { name: "Alex Fernandes", pos: "DEL", rat: 83 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Apertura 2003",
+    players: [
+      { name: "Miguel Calero", pos: "POR", rat: 85 },
+      { name: "Francisco Gabriel de Anda", pos: "DEF", rat: 82 },
+      { name: "Manuel Vidrio", pos: "DEF", rat: 80 },
+      { name: "Alberto Rodríguez", pos: "DEF", rat: 79 },
+      { name: "Joel Huiqui", pos: "DEF", rat: 78 },
+      { name: "Jaime Correa", pos: "MED", rat: 81 },
+      { name: "Octavio Valdez", pos: "MED", rat: 80 },
+      { name: "Gabriel Caballero", pos: "MED", rat: 81 },
+      { name: "Andrés Chitiva", pos: "MED", rat: 84 },
+      { name: "Marinho Ledesma", pos: "DEL", rat: 78 },
+      { name: "Claudinho", pos: "DEL", rat: 82 }
+    ]
+  },
+  {
+    team: "Pumas UNAM",
+    tourney: "Clausura 2004",
+    players: [
+      { name: "Sergio Bernal", pos: "POR", rat: 81 },
+      { name: "Darío Verón", pos: "DEF", rat: 84 },
+      { name: "Joaquín Beltrán", pos: "DEF", rat: 82 },
+      { name: "Israel Castro", pos: "DEF", rat: 80 },
+      { name: "Jaime Lozano", pos: "DEF", rat: 83 },
+      { name: "Gerardo Galindo", pos: "MED", rat: 80 },
+      { name: "José Luis López", pos: "MED", rat: 81 },
+      { name: "Leandro Augusto", pos: "MED", rat: 83 },
+      { name: "Ailton da Silva", pos: "MED", rat: 82 },
+      { name: "Bruno Marioni", pos: "DEL", rat: 85 },
+      { name: "Francisco Fonseca", pos: "DEL", rat: 82 }
+    ]
+  },
+  {
+    team: "Pumas UNAM",
+    tourney: "Apertura 2004",
+    players: [
+      { name: "Sergio Bernal", pos: "POR", rat: 81 },
+      { name: "Darío Verón", pos: "DEF", rat: 84 },
+      { name: "Joaquín Beltrán", pos: "DEF", rat: 82 },
+      { name: "Israel Castro", pos: "DEF", rat: 80 },
+      { name: "Jaime Lozano", pos: "DEF", rat: 83 },
+      { name: "Gerardo Galindo", pos: "MED", rat: 80 },
+      { name: "José Luis López", pos: "MED", rat: 81 },
+      { name: "Leandro Augusto", pos: "MED", rat: 83 },
+      { name: "Joaquín Botero", pos: "DEL", rat: 80 },
+      { name: "David Toledo", pos: "MED", rat: 78 },
+      { name: "Francisco Fonseca", pos: "DEL", rat: 83 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Clausura 2005",
+    players: [
+      { name: "Guillermo Ochoa", pos: "POR", rat: 82 },
+      { name: "Duilio Davino", pos: "DEF", rat: 82 },
+      { name: "Ricardo Rojas", pos: "DEF", rat: 81 },
+      { name: "José Antonio Castro", pos: "DEF", rat: 80 },
+      { name: "Raúl Alvin Mendoza", pos: "DEF", rat: 77 },
+      { name: "Pável Pardo", pos: "MED", rat: 86 },
+      { name: "Germán Villa", pos: "MED", rat: 82 },
+      { name: "Francisco Torres", pos: "MED", rat: 78 },
+      { name: "Cuauhtémoc Blanco", pos: "DEL", rat: 91 },
+      { name: "Claudio López", pos: "DEL", rat: 86 },
+      { name: "Aarón Padilla", pos: "DEL", rat: 79 }
+    ]
+  },
+
+  // ==========================================
+  // ERA 3: CONSOLIDACIÓN DE GRANDES PROYECTOS (2005-2010)
+  // ==========================================
+  {
+    team: "Toluca",
+    tourney: "Apertura 2005",
+    players: [
+      { name: "Hernán Cristante", pos: "POR", rat: 84 },
+      { name: "Paulo da Silva", pos: "DEF", rat: 85 },
+      { name: "Edgar Dueñas", pos: "DEF", rat: 80 },
+      { name: "Manuel de la Torre", pos: "DEF", rat: 78 },
+      { name: "José Manuel Cruzalta", pos: "DEF", rat: 78 },
+      { name: "Israel López", pos: "MED", rat: 82 },
+      { name: "Ariel Rosada", pos: "MED", rat: 80 },
+      { name: "Rodrigo Díaz", pos: "MED", rat: 81 },
+      { name: "Sinha", pos: "MED", rat: 85 },
+      { name: "Vicente Sánchez", pos: "DEL", rat: 86 },
+      { name: "Ismael Valadéz", pos: "DEL", rat: 76 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Clausura 2006",
+    players: [
+      { name: "Miguel Calero", pos: "POR", rat: 85 },
+      { name: "Aquivaldo Mosquera", pos: "DEF", rat: 84 },
+      { name: "Leobardo López", pos: "DEF", rat: 80 },
+      { name: "Eduardo Rergis", pos: "DEF", rat: 78 },
+      { name: "Marvin Cabrera", pos: "DEF", rat: 78 },
+      { name: "Jaime Correa", pos: "MED", rat: 81 },
+      { name: "Gabriel Caballero", pos: "MED", rat: 80 },
+      { name: "Andrés Chitiva", pos: "MED", rat: 83 },
+      { name: "Richard Núñez", pos: "MED", rat: 84 },
+      { name: "Nelson Cuevas", pos: "DEL", rat: 82 },
+      { name: "Luis Ángel Landín", pos: "DEL", rat: 80 }
+    ]
+  },
+  {
+    team: "Chivas",
+    tourney: "Apertura 2006",
+    players: [
+      { name: "Oswaldo Sánchez", pos: "POR", rat: 86 },
+      { name: "Francisco Javier Rodríguez", pos: "DEF", rat: 81 },
+      { name: "Hector Reynoso", pos: "DEF", rat: 80 },
+      { name: "Jonny Magallón", pos: "DEF", rat: 82 },
+      { name: "Diego Martínez", pos: "DEF", rat: 79 },
+      { name: "Patricio Araujo", pos: "MED", rat: 79 },
+      { name: "Gonzalo Pineda", pos: "MED", rat: 81 },
+      { name: "Ramón Morales", pos: "MED", rat: 84 },
+      { name: "Alberto Medina", pos: "MED", rat: 82 },
+      { name: "Omar Bravo", pos: "DEL", rat: 85 },
+      { name: "Adolfo Bautista", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Clausura 2007",
+    players: [
+      { name: "Miguel Calero", pos: "POR", rat: 86 },
+      { name: "Aquivaldo Mosquera", pos: "DEF", rat: 85 },
+      { name: "Leobardo López", pos: "DEF", rat: 81 },
+      { name: "Fausto Pinto", pos: "DEF", rat: 80 },
+      { name: "Marvin Cabrera", pos: "DEF", rat: 79 },
+      { name: "Jaime Correa", pos: "MED", rat: 81 },
+      { name: "Gabriel Caballero", pos: "MED", rat: 80 },
+      { name: "Luis Ángel Landín", pos: "DEL", rat: 80 },
+      { name: "Andrés Chitiva", pos: "MED", rat: 83 },
+      { name: "Christian Giménez", pos: "MED", rat: 86 },
+      { name: "Damián Álvarez", pos: "MED", rat: 85 }
+    ]
+  },
+  {
+    team: "Atlante",
+    tourney: "Apertura 2007",
+    players: [
+      { name: "Federico Vilar", pos: "POR", rat: 84 },
+      { name: "Javier Muñoz Mustafá", pos: "DEF", rat: 81 },
+      { name: "Miguel Martínez", pos: "DEF", rat: 79 },
+      { name: "Arturo Muñoz", pos: "DEF", rat: 77 },
+      { name: "Mustafá Alassan", pos: "DEF", rat: 78 },
+      { name: "Joel González", pos: "MED", rat: 80 },
+      { name: "Alan Zamora", pos: "MED", rat: 78 },
+      { name: "Christian Bermúdez", pos: "MED", rat: 82 },
+      { name: "Gabriel Pereyra", pos: "MED", rat: 82 },
+      { name: "Giancarlo Maldonado", pos: "DEL", rat: 85 },
+      { name: "Alain N'Kong", pos: "DEL", rat: 80 }
+    ]
+  },
+  {
+    team: "Santos Laguna",
+    tourney: "Clausura 2008",
+    players: [
+      { name: "Oswaldo Sánchez", pos: "POR", rat: 84 },
+      { name: "Fernando Ortiz", pos: "DEF", rat: 81 },
+      { name: "Rafael Figueroa", pos: "DEF", rat: 78 },
+      { name: "Edgar Castillo", pos: "DEF", rat: 80 },
+      { name: "Jorge Iván Estrada", pos: "DEF", rat: 81 },
+      { name: "Juan Pablo Rodríguez", pos: "MED", rat: 82 },
+      { name: "Walter Jiménez", pos: "MED", rat: 80 },
+      { name: "Fernando Arce", pos: "MED", rat: 82 },
+      { name: "Daniel Ludueña", pos: "MED", rat: 84 },
+      { name: "Matías Vuoso", pos: "DEL", rat: 83 },
+      { name: "Christian Benítez", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Apertura 2008",
+    players: [
+      { name: "Hernán Cristante", pos: "POR", rat: 84 },
+      { name: "Paulo da Silva", pos: "DEF", rat: 86 },
+      { name: "Edgar Dueñas", pos: "DEF", rat: 81 },
+      { name: "Manuel de la Torre", pos: "DEF", rat: 79 },
+      { name: "José Manuel Cruzalta", pos: "DEF", rat: 78 },
+      { name: "Israel López", pos: "MED", rat: 81 },
+      { name: "Martín Romagnoli", pos: "MED", rat: 82 },
+      { name: "Carlos Esquivel", pos: "MED", rat: 81 },
+      { name: "Sinha", pos: "MED", rat: 84 },
+      { name: "Néstor Calderón", pos: "MED", rat: 79 },
+      { name: "Héctor Mancilla", pos: "DEL", rat: 86 }
+    ]
+  },
+  {
+    team: "Pumas UNAM",
+    tourney: "Clausura 2009",
+    players: [
+      { name: "Sergio Bernal", pos: "POR", rat: 80 },
+      { name: "Darío Verón", pos: "DEF", rat: 84 },
+      { name: "Marco Antonio Palacios", pos: "DEF", rat: 78 },
+      { name: "Efraín Juárez", pos: "DEF", rat: 81 },
+      { name: "Jehu Chiapas", pos: "DEF", rat: 77 },
+      { name: "Israel Castro", pos: "MED", rat: 82 },
+      { name: "Leandro Augusto", pos: "MED", rat: 82 },
+      { name: "Pablo Barrera", pos: "MED", rat: 82 },
+      { name: "Martin Bravo", pos: "DEL", rat: 81 },
+      { name: "Dante López", pos: "DEL", rat: 80 },
+      { name: "Francisco Palencia", pos: "DEL", rat: 79 }
+    ]
+  },
+  {
+    team: "Monterrey",
+    tourney: "Apertura 2009",
+    players: [
+      { name: "Jonathan Orozco", pos: "POR", rat: 81 },
+      { name: "Duilio Davino", pos: "DEF", rat: 80 },
+      { name: "José María Basanta", pos: "DEF", rat: 82 },
+      { name: "William Paredes", pos: "DEF", rat: 78 },
+      { name: "Severo Meza", pos: "DEF", rat: 79 },
+      { name: "Gerardo Galindo", pos: "MED", rat: 79 },
+      { name: "Luis Ernesto Pérez", pos: "MED", rat: 83 },
+      { name: "Walter Ayoví", pos: "MED", rat: 82 },
+      { name: "Osvaldo Martínez", pos: "MED", rat: 81 },
+      { name: "Aldo de Nigris", pos: "DEL", rat: 82 },
+      { name: "Humberto Suazo", pos: "DEL", rat: 88 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Bicentenario 2010",
+    players: [
+      { name: "Alfredo Talavera", pos: "POR", rat: 82 },
+      { name: "Diego Novaretti", pos: "DEF", rat: 82 },
+      { name: "Edgar Dueñas", pos: "DEF", rat: 81 },
+      { name: "Manuel de la Torre", pos: "DEF", rat: 78 },
+      { name: "Osvaldo González", pos: "DEF", rat: 79 },
+      { name: "Martín Romagnoli", pos: "MED", rat: 81 },
+      { name: "Antonio Ríos", pos: "MED", rat: 79 },
+      { name: "Carlos Esquivel", pos: "MED", rat: 81 },
+      { name: "Sinha", pos: "MED", rat: 85 },
+      { name: "Néstor Calderón", pos: "MED", rat: 79 },
+      { name: "Héctor Mancilla", pos: "DEL", rat: 84 }
+    ]
+  },
+
+  // ==========================================
+  // ERA 4: EL ASCENSO DEL NORTE Y DEL LEÓN (2010-2015)
+  // ==========================================
+  {
+    team: "Monterrey",
+    tourney: "Apertura 2010",
+    players: [
+      { name: "Jonathan Orozco", pos: "POR", rat: 82 },
+      { name: "José María Basanta", pos: "DEF", rat: 83 },
+      { name: "Duilio Davino", pos: "DEF", rat: 79 },
+      { name: "Ricardo Osorio", pos: "DEF", rat: 81 },
+      { name: "Hiram Mier", pos: "DEF", rat: 80 },
+      { name: "Walter Ayoví", pos: "MED", rat: 82 },
+      { name: "Luis Ernesto Pérez", pos: "MED", rat: 82 },
+      { name: "Neri Cardozo", pos: "MED", rat: 82 },
+      { name: "Osvaldo Martínez", pos: "MED", rat: 81 },
+      { name: "Aldo de Nigris", pos: "DEL", rat: 83 },
+      { name: "Humberto Suazo", pos: "DEL", rat: 89 }
+    ]
+  },
+  {
+    team: "Pumas UNAM",
+    tourney: "Clausura 2011",
+    players: [
+      { name: "Alejandro Palacios", pos: "POR", rat: 79 },
+      { name: "Darío Verón", pos: "DEF", rat: 84 },
+      { name: "Marco Antonio Palacios", pos: "DEF", rat: 78 },
+      { name: "Luis Fuentes", pos: "DEF", rat: 79 },
+      { name: "Efraín Velarde", pos: "DEF", rat: 80 },
+      { name: "Israel Castro", pos: "MED", rat: 82 },
+      { name: "David Cabrera", pos: "MED", rat: 79 },
+      { name: "Javier Cortés", pos: "MED", rat: 81 },
+      { name: "Martin Bravo", pos: "DEL", rat: 81 },
+      { name: "Dante López", pos: "DEL", rat: 79 },
+      { name: "Juan Carlos Cacho", pos: "DEL", rat: 79 }
+    ]
+  },
+  {
+    team: "Tigres UANL",
+    tourney: "Apertura 2011",
+    players: [
+      { name: "Enrique Palos", pos: "POR", rat: 79 },
+      { name: "Hugo Ayala", pos: "DEF", rat: 82 },
+      { name: "Juninho", pos: "DEF", rat: 83 },
+      { name: "Jorge Torres Nilo", pos: "DEF", rat: 82 },
+      { name: "Israel Jiménez", pos: "DEF", rat: 79 },
+      { name: "Carlos Salcido", pos: "MED", rat: 83 },
+      { name: "Manuel Viniegra", pos: "MED", rat: 78 },
+      { name: "Danilinho", pos: "MED", rat: 81 },
+      { name: "Damián Álvarez", pos: "MED", rat: 83 },
+      { name: "Lucas Lobos", pos: "MED", rat: 86 },
+      { name: "Héctor Mancilla", pos: "DEL", rat: 82 }
+    ]
+  },
+  {
+    team: "Santos Laguna",
+    tourney: "Clausura 2012",
+    players: [
+      { name: "Oswaldo Sánchez", pos: "POR", rat: 82 },
+      { name: "Aaron Galindo", pos: "DEF", rat: 79 },
+      { name: "Rafael Figueroa", pos: "DEF", rat: 78 },
+      { name: "Osmar Mares", pos: "DEF", rat: 78 },
+      { name: "Jorge Iván Estrada", pos: "DEF", rat: 81 },
+      { name: "Juan Pablo Rodríguez", pos: "MED", rat: 81 },
+      { name: "Rodolfo Salinas", pos: "MED", rat: 78 },
+      { name: "Daniel Ludueña", pos: "MED", rat: 83 },
+      { name: "Christian Suárez", pos: "MED", rat: 79 },
+      { name: "Carlos Darwin Quintero", pos: "DEL", rat: 83 },
+      { name: "Oribe Peralta", pos: "DEL", rat: 86 }
+    ]
+  },
+  {
+    team: "Tijuana",
+    tourney: "Apertura 2012",
+    players: [
+      { name: "Cirilo Saucedo", pos: "POR", rat: 81 },
+      { name: "Javier Gandolfi", pos: "DEF", rat: 81 },
+      { name: "Pablo Aguilar", pos: "DEF", rat: 82 },
+      { name: "Edgar Castillo", pos: "DEF", rat: 80 },
+      { name: "Juan Carlos Núñez", pos: "DEF", rat: 78 },
+      { name: "Cristian Pellerano", pos: "MED", rat: 82 },
+      { name: "Fernando Arce", pos: "MED", rat: 81 },
+      { name: "Joe Corona", pos: "MED", rat: 79 },
+      { name: "Fidel Martínez", pos: "MED", rat: 81 },
+      { name: "Alfredo Moreno", pos: "DEL", rat: 80 },
+      { name: "Duvier Riascos", pos: "DEL", rat: 82 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Clausura 2013",
+    players: [
+      { name: "Moisés Muñoz", pos: "POR", rat: 81 },
+      { name: "Aquivaldo Mosquera", pos: "DEF", rat: 82 },
+      { name: "Diego Reyes", pos: "DEF", rat: 81 },
+      { name: "Paul Aguilar", pos: "DEF", rat: 81 },
+      { name: "Miguel Layún", pos: "DEF", rat: 80 },
+      { name: "Jesús Molina", pos: "MED", rat: 80 },
+      { name: "Juan Carlos Medina", pos: "MED", rat: 80 },
+      { name: "Rubens Sambueza", pos: "MED", rat: 84 },
+      { name: "Christian Benítez", pos: "DEL", rat: 87 },
+      { name: "Raúl Jiménez", pos: "DEL", rat: 82 },
+      { name: "Francisco Javier Rodríguez", pos: "DEF", rat: 80 }
+    ]
+  },
+  {
+    team: "León",
+    tourney: "Apertura 2013",
+    players: [
+      { name: "William Yarbrough", pos: "POR", rat: 80 },
+      { name: "Rafael Márquez", pos: "DEF", rat: 85 },
+      { name: "Ignacio González", pos: "DEF", rat: 79 },
+      { name: "Edwin Hernández", pos: "DEF", rat: 80 },
+      { name: "Jonny Magallón", pos: "DEF", rat: 80 },
+      { name: "José Juan Vázquez", pos: "MED", rat: 82 },
+      { name: "Carlos Peña", pos: "MED", rat: 84 },
+      { name: "Luis Montes", pos: "MED", rat: 84 },
+      { name: "Hernán Darío Burbano", pos: "MED", rat: 81 },
+      { name: "Matías Britos", pos: "DEL", rat: 80 },
+      { name: "Mauro Boselli", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "León",
+    tourney: "Clausura 2014",
+    players: [
+      { name: "William Yarbrough", pos: "POR", rat: 80 },
+      { name: "Rafael Márquez", pos: "DEF", rat: 84 },
+      { name: "Ignacio González", pos: "DEF", rat: 79 },
+      { name: "Edwin Hernández", pos: "DEF", rat: 80 },
+      { name: "Jonny Magallón", pos: "DEF", rat: 79 },
+      { name: "José Juan Vázquez", pos: "MED", rat: 83 },
+      { name: "Carlos Peña", pos: "MED", rat: 83 },
+      { name: "Luis Montes", pos: "MED", rat: 84 },
+      { name: "Chema Cárdenas", pos: "MED", rat: 79 },
+      { name: "Eisner Loboa", pos: "MED", rat: 80 },
+      { name: "Mauro Boselli", pos: "DEL", rat: 86 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Apertura 2014",
+    players: [
+      { name: "Moisés Muñoz", pos: "POR", rat: 81 },
+      { name: "Paolo Goltz", pos: "DEF", rat: 81 },
+      { name: "Pablo Aguilar", pos: "DEF", rat: 83 },
+      { name: "Paul Aguilar", pos: "DEF", rat: 82 },
+      { name: "Osmar Mares", pos: "DEF", rat: 78 },
+      { name: "Jesús Molina", pos: "MED", rat: 81 },
+      { name: "Osvaldo Martínez", pos: "MED", rat: 81 },
+      { name: "Rubens Sambueza", pos: "MED", rat: 84 },
+      { name: "Michael Arroyo", pos: "MED", rat: 81 },
+      { name: "Oribe Peralta", pos: "DEL", rat: 84 },
+      { name: "Martin Zúñiga", pos: "DEL", rat: 75 }
+    ]
+  },
+  {
+    team: "Santos Laguna",
+    tourney: "Clausura 2015",
+    players: [
+      { name: "Agustín Marchesín", pos: "POR", rat: 83 },
+      { name: "Carlos Izquierdoz", pos: "DEF", rat: 82 },
+      { name: "Néstor Araujo", pos: "DEF", rat: 80 },
+      { name: "Adrian Aldrete", pos: "DEF", rat: 79 },
+      { name: "José Abella", pos: "DEF", rat: 78 },
+      { name: "Jesús Molina", pos: "MED", rat: 81 },
+      { name: "Diego González", pos: "MED", rat: 80 },
+      { name: "Nestor Calderón", pos: "MED", rat: 81 },
+      { name: "Andrés Rentería", pos: "MED", rat: 80 },
+      { name: "Djaniny Tavares", pos: "DEL", rat: 82 },
+      { name: "Javier Orozco", pos: "DEL", rat: 81 }
+    ]
+  },
+
+  // ==========================================
+  // ERA 5: LA DINASTÍA DE TIGRES Y EL REGRESO DE CHIVAS (2015-2020)
+  // ==========================================
+  {
+    team: "Tigres UANL",
+    tourney: "Apertura 2015",
+    players: [
+      { name: "Nahuel Guzmán", pos: "POR", rat: 83 },
+      { name: "Hugo Ayala", pos: "DEF", rat: 81 },
+      { name: "Juninho", pos: "DEF", rat: 82 },
+      { name: "Jorge Torres Nilo", pos: "DEF", rat: 81 },
+      { name: "Israel Jiménez", pos: "DEF", rat: 79 },
+      { name: "Guido Pizarro", pos: "MED", rat: 83 },
+      { name: "Jesús Dueñas", pos: "MED", rat: 81 },
+      { name: "Javier Aquino", pos: "MED", rat: 82 },
+      { name: "Jürgen Damm", pos: "MED", rat: 80 },
+      { name: "Rafael Sobis", pos: "DEL", rat: 83 },
+      { name: "André-Pierre Gignac", pos: "DEL", rat: 88 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Clausura 2016",
+    players: [
+      { name: "Óscar Pérez", pos: "POR", rat: 80 },
+      { name: "Omar González", pos: "DEF", rat: 80 },
+      { name: "Óscar Murillo", pos: "DEF", rat: 81 },
+      { name: "Emmanuel García", pos: "DEF", rat: 78 },
+      { name: "Stefan Medina", pos: "DEF", rat: 80 },
+      { name: "Jorge Hernández", pos: "MED", rat: 81 },
+      { name: "Erick Gutiérrez", pos: "MED", rat: 82 },
+      { name: "Rodolfo Pizarro", pos: "MED", rat: 83 },
+      { name: "Hirving Lozano", pos: "MED", rat: 85 },
+      { name: "Franco Jara", pos: "DEL", rat: 83 },
+      { name: "Jonathan Urretaviscaya", pos: "MED", rat: 82 }
+    ]
+  },
+  {
+    team: "Tigres UANL",
+    tourney: "Apertura 2016",
+    players: [
+      { name: "Nahuel Guzmán", pos: "POR", rat: 84 },
+      { name: "Hugo Ayala", pos: "DEF", rat: 81 },
+      { name: "Juninho", pos: "DEF", rat: 81 },
+      { name: "Jorge Torres Nilo", pos: "DEF", rat: 80 },
+      { name: "Iván Estrada", pos: "DEF", rat: 78 },
+      { name: "Guido Pizarro", pos: "MED", rat: 84 },
+      { name: "Jesús Dueñas", pos: "MED", rat: 81 },
+      { name: "Javier Aquino", pos: "MED", rat: 83 },
+      { name: "Jürgen Damm", pos: "MED", rat: 80 },
+      { name: "Ismael Sosa", pos: "DEL", rat: 82 },
+      { name: "André-Pierre Gignac", pos: "DEL", rat: 89 }
+    ]
+  },
+  {
+    team: "Chivas",
+    tourney: "Clausura 2017",
+    players: [
+      { name: "Rodolfo Cota", pos: "POR", rat: 81 },
+      { name: "Oswaldo Alanís", pos: "DEF", rat: 80 },
+      { name: "Carlos Salcido", pos: "DEF", rat: 81 },
+      { name: "Edwin Hernández", pos: "DEF", rat: 79 },
+      { name: "Jesús Sánchez", pos: "DEF", rat: 79 },
+      { name: "Michael Pérez", pos: "MED", rat: 78 },
+      { name: "Orbelín Pineda", pos: "MED", rat: 83 },
+      { name: "Rodolfo Pizarro", pos: "MED", rat: 84 },
+      { name: "Nestor Calderón", pos: "MED", rat: 79 },
+      { name: "Alan Pulido", pos: "DEL", rat: 83 },
+      { name: "Carlos Fierro", pos: "DEL", rat: 78 }
+    ]
+  },
+  {
+    team: "Tigres UANL",
+    tourney: "Apertura 2017",
+    players: [
+      { name: "Nahuel Guzmán", pos: "POR", rat: 84 },
+      { name: "Hugo Ayala", pos: "DEF", rat: 81 },
+      { name: "Juninho", pos: "DEF", rat: 81 },
+      { name: "Jorge Torres Nilo", pos: "DEF", rat: 80 },
+      { name: "Luis Rodríguez", pos: "DEF", rat: 81 },
+      { name: "Rafael Carioca", pos: "MED", rat: 83 },
+      { name: "Jesús Dueñas", pos: "MED", rat: 81 },
+      { name: "Javier Aquino", pos: "MED", rat: 83 },
+      { name: "Eduardo Vargas", pos: "DEL", rat: 82 },
+      { name: "Enner Valencia", pos: "DEL", rat: 83 },
+      { name: "André-Pierre Gignac", pos: "DEL", rat: 89 }
+    ]
+  },
+  {
+    team: "Santos Laguna",
+    tourney: "Clausura 2018",
+    players: [
+      { name: "Jonathan Orozco", pos: "POR", rat: 81 },
+      { name: "Carlos Izquierdoz", pos: "DEF", rat: 83 },
+      { name: "Gerardo Alcoba", pos: "DEF", rat: 79 },
+      { name: "Jesús Angulo", pos: "DEF", rat: 78 },
+      { name: "José Abella", pos: "DEF", rat: 79 },
+      { name: "José Juan Vázquez", pos: "MED", rat: 82 },
+      { name: "Osvaldo Martínez", pos: "MED", rat: 81 },
+      { name: "Brian Lozano", pos: "MED", rat: 82 },
+      { name: "Ayrton Preciado", pos: "MED", rat: 79 },
+      { name: "Julio Furch", pos: "DEL", rat: 83 },
+      { name: "Djaniny Tavares", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Apertura 2018",
+    players: [
+      { name: "Agustín Marchesín", pos: "POR", rat: 85 },
+      { name: "Bruno Valdez", pos: "DEF", rat: 83 },
+      { name: "Emanuel Aguilera", pos: "DEF", rat: 81 },
+      { name: "Paul Aguilar", pos: "DEF", rat: 80 },
+      { name: "Jorge Sánchez", pos: "DEF", rat: 79 },
+      { name: "Guido Rodríguez", pos: "MED", rat: 85 },
+      { name: "Mateus Uribe", pos: "MED", rat: 83 },
+      { name: "Renato Ibarra", pos: "MED", rat: 82 },
+      { name: "Diego Lainez", pos: "MED", rat: 80 },
+      { name: "Oribe Peralta", pos: "DEL", rat: 81 },
+      { name: "Henry Martín", pos: "DEL", rat: 79 }
+    ]
+  },
+  {
+    team: "Tigres UANL",
+    tourney: "Clausura 2019",
+    players: [
+      { name: "Nahuel Guzmán", pos: "POR", rat: 85 },
+      { name: "Hugo Ayala", pos: "DEF", rat: 81 },
+      { name: "Francisco Meza", pos: "DEF", rat: 79 },
+      { name: "Jorge Torres Nilo", pos: "DEF", rat: 80 },
+      { name: "Luis Rodríguez", pos: "DEF", rat: 81 },
+      { name: "Rafael Carioca", pos: "MED", rat: 83 },
+      { name: "Guido Pizarro", pos: "MED", rat: 83 },
+      { name: "Jesús Dueñas", pos: "MED", rat: 80 },
+      { name: "Luis Quiñones", pos: "MED", rat: 81 },
+      { name: "Eduardo Vargas", pos: "DEL", rat: 81 },
+      { name: "André-Pierre Gignac", pos: "DEL", rat: 88 }
+    ]
+  },
+  {
+    team: "Monterrey",
+    tourney: "Apertura 2019",
+    players: [
+      { name: "Marcelo Barovero", pos: "POR", rat: 82 },
+      { name: "Nicolás Sánchez", pos: "DEF", rat: 82 },
+      { name: "José María Basanta", pos: "DEF", rat: 80 },
+      { name: "Leonel Vangioni", pos: "DEF", rat: 79 },
+      { name: "Stefan Medina", pos: "DEF", rat: 81 },
+      { name: "Celso Ortiz", pos: "MED", rat: 81 },
+      { name: "Carlos Rodríguez", pos: "MED", rat: 82 },
+      { name: "Jesús Gallardo", pos: "MED", rat: 81 },
+      { name: "Dorlan Pabón", pos: "MED", rat: 82 },
+      { name: "Rodolfo Pizarro", pos: "MED", rat: 83 },
+      { name: "Rogelio Funes Mori", pos: "DEL", rat: 85 }
+    ]
+  },
+
+  // ==========================================
+  // ERA 6: DE LA SEQUÍA DE ATLAS AL FIN DE LA DÉCADA (2021-2026)
+  // ==========================================
+  {
+    team: "Cruz Azul",
+    tourney: "Guardianes 2021",
+    players: [
+      { name: "Jesús Corona", pos: "POR", rat: 82 },
+      { name: "Pablo Aguilar", pos: "DEF", rat: 82 },
+      { name: "Julio César Domínguez", pos: "DEF", rat: 80 },
+      { name: "Ignacio Rivero", pos: "DEF", rat: 81 },
+      { name: "Juan Escobar", pos: "DEF", rat: 81 },
+      { name: "Rafael Baca", pos: "MED", rat: 78 },
+      { name: "Luis Romo", pos: "MED", rat: 84 },
+      { name: "Guillermo Fernández", pos: "MED", rat: 81 },
+      { name: "Orbelín Pineda", pos: "MED", rat: 83 },
+      { name: "Roberto Alvarado", pos: "MED", rat: 82 },
+      { name: "Jonathan Rodríguez", pos: "DEL", rat: 86 }
+    ]
+  },
+  {
+    team: "Atlas",
+    tourney: "Apertura 2021",
+    players: [
+      { name: "Camilo Vargas", pos: "POR", rat: 84 },
+      { name: "Hugo Nervo", pos: "DEF", rat: 81 },
+      { name: "Anderson Santamaría", pos: "DEF", rat: 80 },
+      { name: "Jesús Angulo", pos: "DEF", rat: 80 },
+      { name: "Diego Barbosa", pos: "DEF", rat: 79 },
+      { name: "Luis Reyes", pos: "DEF", rat: 80 },
+      { name: "Aldo Rocha", pos: "MED", rat: 82 },
+      { name: "Jeremy Márquez", pos: "MED", rat: 79 },
+      { name: "Jairo Torres", pos: "MED", rat: 80 },
+      { name: "Julio Furch", pos: "DEL", rat: 83 },
+      { name: "Julián Quiñones", pos: "DEL", rat: 84 }
+    ]
+  },
+  {
+    team: "Atlas",
+    tourney: "Clausura 2022",
+    players: [
+      { name: "Camilo Vargas", pos: "POR", rat: 85 },
+      { name: "Hugo Nervo", pos: "DEF", rat: 82 },
+      { name: "Anderson Santamaría", pos: "DEF", rat: 80 },
+      { name: "Emanuel Aguilera", pos: "DEF", rat: 79 },
+      { name: "José Abella", pos: "DEF", rat: 79 },
+      { name: "Luis Reyes", pos: "DEF", rat: 81 },
+      { name: "Aldo Rocha", pos: "MED", rat: 83 },
+      { name: "Edgar Zaldívar", pos: "MED", rat: 78 },
+      { name: "Aníbal Chalá", pos: "MED", rat: 79 },
+      { name: "Julio Furch", pos: "DEL", rat: 83 },
+      { name: "Julián Quiñones", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "Pachuca",
+    tourney: "Apertura 2022",
+    players: [
+      { name: "Oscar Ustari", pos: "POR", rat: 81 },
+      { name: "Gustavo Cabral", pos: "DEF", rat: 82 },
+      { name: "Oscar Murillo", pos: "DEF", rat: 80 },
+      { name: "Mauricio Isais", pos: "DEF", rat: 78 },
+      { name: "Kevin Álvarez", pos: "DEF", rat: 82 },
+      { name: "Luis Chávez", pos: "MED", rat: 84 },
+      { name: "Erick Sánchez", pos: "MED", rat: 83 },
+      { name: "Víctor Guzmán", pos: "MED", rat: 83 },
+      { name: "Romario Ibarra", pos: "MED", rat: 81 },
+      { name: "Avilés Hurtado", pos: "MED", rat: 80 },
+      { name: "Nicolás Ibáñez", pos: "DEL", rat: 84 }
+    ]
+  },
+  {
+    team: "Tigres UANL",
+    tourney: "Clausura 2023",
+    players: [
+      { name: "Nahuel Guzmán", pos: "POR", rat: 84 },
+      { name: "Diego Reyes", pos: "DEF", rat: 79 },
+      { name: "Guido Pizarro", pos: "DEF", rat: 82 },
+      { name: "Jesús Angulo", pos: "DEF", rat: 80 },
+      { name: "Javier Aquino", pos: "DEF", rat: 81 },
+      { name: "Rafael Carioca", pos: "MED", rat: 82 },
+      { name: "Juan Pablo Vigón", pos: "MED", rat: 80 },
+      { name: "Fernando Gorriarán", pos: "MED", rat: 82 },
+      { name: "Luis Quiñones", pos: "MED", rat: 80 },
+      { name: "Diego Lainez", pos: "MED", rat: 80 },
+      { name: "André-Pierre Gignac", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Apertura 2023",
+    players: [
+      { name: "Luis Malagón", pos: "POR", rat: 82 },
+      { name: "Igor Lichnovsky", pos: "DEF", rat: 81 },
+      { name: "Sebastian Cáceres", pos: "DEF", rat: 81 },
+      { name: "Luis Fuentes", pos: "DEF", rat: 79 },
+      { name: "Kevin Álvarez", pos: "DEF", rat: 81 },
+      { name: "Jonathan dos Santos", pos: "MED", rat: 81 },
+      { name: "Alvaro Fidalgo", pos: "MED", rat: 84 },
+      { name: "Alejandro Zendejas", pos: "MED", rat: 81 },
+      { name: "Diego Valdés", pos: "MED", rat: 85 },
+      { name: "Julián Quiñones", pos: "DEL", rat: 84 },
+      { name: "Henry Martín", pos: "DEL", rat: 84 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Clausura 2024",
+    players: [
+      { name: "Luis Malagón", pos: "POR", rat: 83 },
+      { name: "Igor Lichnovsky", pos: "DEF", rat: 81 },
+      { name: "Ramón Juárez", pos: "DEF", rat: 79 },
+      { name: "Israel Reyes", pos: "DEF", rat: 80 },
+      { name: "Cristian Calderón", pos: "DEF", rat: 80 },
+      { name: "Jonathan dos Santos", pos: "MED", rat: 81 },
+      { name: "Alvaro Fidalgo", pos: "MED", rat: 85 },
+      { name: "Alejandro Zendejas", pos: "MED", rat: 81 },
+      { name: "Diego Valdés", pos: "MED", rat: 85 },
+      { name: "Julián Quiñones", pos: "DEL", rat: 84 },
+      { name: "Henry Martín", pos: "DEL", rat: 85 }
+    ]
+  },
+  {
+    team: "América",
+    tourney: "Apertura 2024",
+    players: [
+      { name: "Luis Malagón", pos: "POR", rat: 84 },
+      { name: "Igor Lichnovsky", pos: "DEF", rat: 82 },
+      { name: "Sebastian Cáceres", pos: "DEF", rat: 82 },
+      { name: "Israel Reyes", pos: "DEF", rat: 81 },
+      { name: "Cristian Calderón", pos: "DEF", rat: 80 },
+      { name: "Jonathan dos Santos", pos: "MED", rat: 80 },
+      { name: "Alvaro Fidalgo", pos: "MED", rat: 85 },
+      { name: "Diego Valdés", pos: "MED", rat: 86 },
+      { name: "Alejandro Zendejas", pos: "MED", rat: 82 },
+      { name: "Henry Martín", pos: "DEL", rat: 86 },
+      { name: "Rodrigo Aguirre", pos: "DEL", rat: 81 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Clausura 2025",
+    players: [
+      { name: "Tiago Volpi", pos: "POR", rat: 83 },
+      { name: "Federico Pereira", pos: "DEF", rat: 82 },
+      { name: "Luan Garcia", pos: "DEF", rat: 81 },
+      { name: "Brian García", pos: "DEF", rat: 79 },
+      { name: "Jesús Gallardo", pos: "DEF", rat: 80 },
+      { name: "Claudio Baeza", pos: "MED", rat: 81 },
+      { name: "Marcel Ruiz", pos: "MED", rat: 83 },
+      { name: "Alexis Vega", pos: "MED", rat: 84 },
+      { name: "Jesús Angulo", pos: "MED", rat: 82 },
+      { name: "Helinho", pos: "MED", rat: 83 },
+      { name: "Paulinho", pos: "DEL", rat: 87 }
+    ]
+  },
+  {
+    team: "Toluca",
+    tourney: "Apertura 2025",
+    players: [
+      { name: "Tiago Volpi", pos: "POR", rat: 83 },
+      { name: "Federico Pereira", pos: "DEF", rat: 83 },
+      { name: "Luan Garcia", pos: "DEF", rat: 82 },
+      { name: "Brian García", pos: "DEF", rat: 80 },
+      { name: "Jesús Gallardo", pos: "DEF", rat: 81 },
+      { name: "Claudio Baeza", pos: "MED", rat: 81 },
+      { name: "Marcel Ruiz", pos: "MED", rat: 84 },
+      { name: "Alexis Vega", pos: "MED", rat: 85 },
+      { name: "Jesús Angulo", pos: "MED", rat: 82 },
+      { name: "Helinho", pos: "MED", rat: 83 },
+      { name: "Paulinho", pos: "DEL", rat: 88 }
+    ]
+  },
+  {
+    team: "Cruz Azul",
+    tourney: "Clausura 2026",
+    players: [
+      { name: "Kevin Mier", pos: "POR", rat: 85 },
+      { name: "Willer Ditta", pos: "DEF", rat: 83 },
+      { name: "Gonzalo Piovi", pos: "DEF", rat: 83 },
+      { name: "Jorge Sánchez", pos: "DEF", rat: 81 },
+      { name: "Carlos Rotondi", pos: "DEF", rat: 84 },
+      { name: "Luis Romo", pos: "MED", rat: 85 },
+      { name: "Charly Rodríguez", pos: "MED", rat: 83 },
+      { name: "Lorenzo Faravelli", pos: "MED", rat: 81 },
+      { name: "Alexis Gutiérrez", pos: "MED", rat: 82 },
+      { name: "Giorgos Giakoumakis", pos: "DEL", rat: 85 },
+      { name: "Ángel Sepúlveda", pos: "DEL", rat: 82 }
+    ]
+  }
+];
+
+// Stylized club badges (colors + initials) — not official crests/logos.
+const TEAM_STYLE = {
+  "Pachuca": {short:"PAC", color:"#003DA5"},
+  "Toluca": {short:"TOL", color:"#D2001C"},
+  "Pumas UNAM": {short:"PUM", color:"#0C2340"},
+  "América": {short:"AME", color:"#F2C200"},
+  "Santos Laguna": {short:"SAN", color:"#1C7A3E"},
+  "Monterrey": {short:"MTY", color:"#003DA5"},
+  "Tigres UANL": {short:"TIG", color:"#FF6A00"},
+  "Chivas": {short:"CHI", color:"#A5122A"},
+  "Cruz Azul": {short:"CAZ", color:"#0033A0"},
+  "Atlas": {short:"ATL", color:"#B01E2C"},
+};
+function findTeamStyle(name){
+  const key = Object.keys(TEAM_STYLE).find(k => name && name.includes(k));
+  if(key) return TEAM_STYLE[key];
+  return {short:(name||"?").replace(/[^A-Za-zÀ-ÿ]/g,'').slice(0,3).toUpperCase() || "?", color:"#5a6b62"};
+}
+function crestHTML(team, size){
+  const st = findTeamStyle(team);
+  return `<span class="crest-badge" style="width:${size}px;height:${size}px;background:${st.color};font-size:${Math.round(size*0.34)}px;">${st.short}</span>`;
+}
+
+const FORMATIONS = {
+  "4-3-3": {POR:1, DEF:4, MED:3, DEL:3},
+  "4-4-2": {POR:1, DEF:4, MED:4, DEL:2},
+  "4-2-3-1": {POR:1, DEF:4, MED:5, DEL:1},
+};
+const POS_LABEL = {POR:"Portero", DEF:"Defensa", MED:"Medio", DEL:"Delantero"};
+
+/* ---------------- STATE ---------------- */
+let state = {
+  formation: "4-3-3",
+  needed: {...FORMATIONS["4-3-3"]},
+  filled: [],          // {pos, name, team}
+  usedTeams: new Set(),
+  currentRoll: null,   // champion object
+  rerolls: 3,
+};
+
+/* ---------------- SETUP UI ---------------- */
+const formationRow = document.getElementById('formation-row');
+Object.keys(FORMATIONS).forEach(f=>{
+  const b = document.createElement('button');
+  b.className = 'formation-btn' + (f===state.formation ? ' active' : '');
+  b.textContent = f;
+  b.onclick = ()=>{ if(state.filled.length>0){ if(!confirm('Cambiar de formación reinicia el draft. ¿Continuar?')) return; resetAll(false); } state.formation=f; state.needed={...FORMATIONS[f]}; renderAll(); };
+  formationRow.appendChild(b);
+});
+
+/* ---------------- PITCH RENDER ---------------- */
+function renderPitch(){
+  const pitch = document.getElementById('pitch');
+  pitch.innerHTML = '';
+  const need = FORMATIONS[state.formation];
+  const rows = [
+    {pos:'DEL', count:need.DEL},
+    {pos:'MED', count:need.MED},
+    {pos:'DEF', count:need.DEF},
+    {pos:'POR', count:need.POR},
+  ];
+  rows.forEach(r=>{
+    const rowEl = document.createElement('div');
+    rowEl.className='pitch-row';
+    const filledOfPos = state.filled.filter(p=>p.pos===r.pos);
+    for(let i=0;i<r.count;i++){
+      const slot = document.createElement('div');
+      const p = filledOfPos[i];
+      slot.className = 'slot' + (p ? ' filled':'');
+      if(p){
+        slot.innerHTML = `<div class="pos-tag">${POS_LABEL[r.pos]}</div>${crestHTML(p.team, 22)}<div class="p-name">${p.name}</div><div class="p-team">${p.team}</div>`;
+      } else {
+        slot.innerHTML = `<div class="pos-tag">${POS_LABEL[r.pos]}</div><div class="p-name" style="color:var(--chalk-dim)">—</div>`;
+      }
+      rowEl.appendChild(slot);
+    }
+    pitch.appendChild(rowEl);
+  });
+
+  document.getElementById('formation-row').querySelectorAll('.formation-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent===state.formation);
+  });
+
+  const total = Object.values(need).reduce((a,b)=>a+b,0);
+  document.getElementById('sim-btn').disabled = state.filled.length < total;
+  renderSquadList();
+}
+
+function renderSquadList(){
+  const box = document.getElementById('squad-list');
+  if(!box) return;
+  if(state.filled.length===0){
+    box.innerHTML = `<div class="sq-title">Plantilla</div><div class="squad-empty">Aún no has fichado a nadie. Tira el dado para empezar.</div>`;
+    return;
+  }
+  const order = ['DEL','MED','DEF','POR'];
+  const sorted = [...state.filled].sort((a,b)=>order.indexOf(a.pos)-order.indexOf(b.pos));
+  const rows = sorted.map(p=>`
+    <div class="squad-row">
+      <div style="display:flex; align-items:center; gap:8px;">
+        ${crestHTML(p.team, 26)}
+        <div><span class="sq-pos">${POS_LABEL[p.pos]} · ${p.team}</span><span class="sq-name">${p.name}</span></div>
+      </div>
+      <div class="sq-rat">${Math.round(p.rat)}</div>
+    </div>
+  `).join('');
+  const avg = Math.round(state.filled.reduce((a,p)=>a+p.rat,0)/state.filled.length);
+  box.innerHTML = `
+    <div class="sq-title">Plantilla (${state.filled.length}/11)</div>
+    ${rows}
+    <div class="squad-avg"><span class="avg-lbl">Promedio</span><span class="avg-val">${avg}</span></div>
+  `;
+}
+
+/* ---------------- DRAFT LOGIC ---------------- */
+function remainingPositions(){
+  const need = FORMATIONS[state.formation];
+  const out = {};
+  Object.keys(need).forEach(pos=>{
+    const have = state.filled.filter(p=>p.pos===pos).length;
+    out[pos] = need[pos]-have;
+  });
+  return out;
+}
+
+function rollTeam(){
+  const remPos = remainingPositions();
+  const openPositions = Object.keys(remPos).filter(p=>remPos[p]>0);
+  const available = CHAMPIONS.filter(c=>{
+    if(state.usedTeams.has(c.team+c.tourney)) return false;
+    return c.players.some(pl=>openPositions.includes(pl.pos));
+  });
+  if(available.length===0){
+    document.getElementById('roll-area').innerHTML = `<p class="hint">No quedan planteles disponibles con jugadores para las posiciones abiertas.</p>`;
+    return;
+  }
+  const pick = available[Math.floor(Math.random()*available.length)];
+  state.currentRoll = pick;
+  renderRoll(openPositions);
+  document.getElementById('reroll-btn').disabled = state.rerolls<=0;
+}
+
+function renderRoll(openPositions){
+  const c = state.currentRoll;
+  const area = document.getElementById('roll-area');
+  const eligible = c.players.filter(p=>openPositions.includes(p.pos));
+  let html = `<div class="roll-card">
+    ${crestHTML(c.team, 52)}
+    <div class="info"><div class="team">${c.team}</div><div class="tourney">${c.tourney} · Campeón</div></div>
+  </div>
+  <p class="hint">Elige un jugador de esta plantilla para una posición abierta:</p>
+  <div class="player-grid">`;
+  eligible.forEach(p=>{
+    html += `<div class="player-card" onclick="pickPlayer('${p.name.replace(/'/g,"\\'")}')">
+      <div><div class="pname">${p.name}</div><div class="ppos">${POS_LABEL[p.pos]} · ${c.team}</div></div>
+      <div class="prat">${p.rat}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  area.innerHTML = html;
+}
+
+function pickPlayer(name){
+  const c = state.currentRoll;
+  const p = c.players.find(pl=>pl.name===name);
+  if(!p) return;
+  state.filled.push({pos:p.pos, name:p.name, team:c.team, rat:p.rat});
+  state.usedTeams.add(c.team+c.tourney);
+  state.currentRoll = null;
+  state.rerolls = 3;
+  document.getElementById('roll-area').innerHTML = `<p class="hint">✓ ${p.name} (${c.team}) fichado. Tira de nuevo para la siguiente posición.</p>`;
+  document.getElementById('reroll-btn').disabled = true;
+  renderPitch();
+}
+
+document.getElementById('roll-btn').onclick = ()=>{
+  const total = Object.values(FORMATIONS[state.formation]).reduce((a,b)=>a+b,0);
+  if(state.filled.length>=total) return;
+  rollTeam();
+};
+document.getElementById('reroll-btn').onclick = ()=>{
+  if(state.rerolls<=0) return;
+  state.rerolls -= 1;
+  document.getElementById('reroll-count').textContent = state.rerolls;
+  rollTeam();
+};
+document.getElementById('reset-btn').onclick = ()=>{ if(confirm('¿Reiniciar todo el draft?')) resetAll(true); };
+
+function resetAll(rerender){
+  state.filled = [];
+  state.usedTeams = new Set();
+  state.currentRoll = null;
+  state.rerolls = 3;
+  if(sim && sim.timer) clearInterval(sim.timer);
+  sim = null;
+  document.getElementById('reroll-count').textContent = 3;
+  document.getElementById('reroll-btn').disabled = true;
+  document.getElementById('roll-area').innerHTML = `<p class="hint">Tira el dado para que aparezca un plantel campeón.</p>`;
+  document.getElementById('sim-area').innerHTML = `<p class="hint">Completa las 11 posiciones para poder simular. Formato: repechaje (partido único) → cuartos, semifinal y final a ida y vuelta.</p>`;
+  document.getElementById('sim-btn').style.display='inline-block';
+  document.getElementById('sim-btn').textContent='Iniciar torneo';
+  document.getElementById('skip-match-btn').style.display='none';
+  document.getElementById('skip-all-btn').style.display='none';
+  document.getElementById('next-match-btn').style.display='none';
+  if(rerender) renderAll();
+}
+
+/* ---------------- SIMULATION ENGINE ---------------- */
+
+// Weight each position's contribution to attack vs defense strength.
+const ATTACK_WEIGHT = {DEL:1.6, MED:1.1, DEF:0.35, POR:0.1};
+const DEFENSE_WEIGHT = {POR:1.8, DEF:1.5, MED:0.6, DEL:0.15};
+// Relative chance a player gets credited with a goal, by position.
+const SCORER_WEIGHT = {DEL:6, MED:3, DEF:1, POR:0.1};
+
+function weightedAverage(weights){
+  let num=0, den=0;
+  state.filled.forEach(p=>{
+    const w = weights[p.pos] || 0.3;
+    num += p.rat * w;
+    den += w;
+  });
+  return den ? num/den : 75;
+}
+function attackRating(){ return weightedAverage(ATTACK_WEIGHT); }
+function defenseRating(){ return weightedAverage(DEFENSE_WEIGHT); }
+
+// Correct Poisson sampling (Knuth's algorithm).
+function poissonSample(lambda){
+  lambda = Math.max(0.05, lambda);
+  const L = Math.exp(-lambda);
+  let k = 0, p = 1;
+  do { k++; p *= Math.random(); } while (p > L);
+  return k - 1;
+}
+
+function pickScorer(){
+  const pool = state.filled.map(p=>({p, w: SCORER_WEIGHT[p.pos] || 0.5}));
+  const total = pool.reduce((a,x)=>a+x.w,0);
+  let r = Math.random()*total;
+  for(const x of pool){ r -= x.w; if(r<=0) return x.p.name; }
+  return pool[pool.length-1].p.name;
+}
+function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
+
+// Tournament shape: groups don't eliminate, repechaje is sudden-death single leg,
+// cuartos/semis/final are two-legged aggregate ties.
+const STAGE_DEFS = [
+  {id:"repechaje", label:"Repechaje", kind:"sudden", legs:1, oppBase:[76,88]},
+  {id:"cuartos", label:"Cuartos de Final", kind:"agg", legs:2, oppBase:[82,91]},
+  {id:"semis", label:"Semifinal", kind:"agg", legs:2, oppBase:[85,93]},
+  {id:"final", label:"Final", kind:"agg", legs:2, oppBase:[88,95]},
+];
+const RIVALS = ["Cruz Azul '97","Chivas 2006","Tigres 2019","Necaxa '98","León 2020","América 2013","Monterrey 2019","Pachuca '99","Xolos 2012","Puebla '90"];
+const SPEED_MS = {slow:170, normal:65, fast:14};
+
+let sim = null; // active tournament state
+
+function buildMatchQueue(){
+  const rivals = [...RIVALS].sort(()=>Math.random()-0.5);
+  const queue = [];
+  STAGE_DEFS.forEach((stage, idx)=>{
+    const rivalName = rivals[idx % rivals.length];
+    const oppRating = stage.oppBase[0] + Math.random()*(stage.oppBase[1]-stage.oppBase[0]);
+    for(let leg=1; leg<=stage.legs; leg++){
+      queue.push({
+        stageId: stage.id, stageLabel: stage.label, kind: stage.kind,
+        legs: stage.legs, leg, rivalName, oppRating,
+        home: stage.legs===1 ? true : (leg===1)
+      });
+    }
+  });
+  return queue;
+}
+
+function resolveGoals(oppRating){
+  const myAtk = sim.myAtk, myDef = sim.myDef;
+  const myLambda  = clamp(0.25 + (myAtk - oppRating)/22, 0.15, 3.6);
+  const oppLambda = clamp(0.25 + (oppRating - myDef)/22, 0.1, 3.2);
+  const myGoals = poissonSample(myLambda);
+  const oppGoals = poissonSample(oppLambda);
+  const myMinutes = Array.from({length:myGoals}, ()=>({min:Math.floor(Math.random()*90)+1, mine:true, name:pickScorer()}));
+  const oppMinutes = Array.from({length:oppGoals}, ()=>({min:Math.floor(Math.random()*90)+1, mine:false, name:sim.currentMatch.rivalName}));
+  const events = [...myMinutes, ...oppMinutes].sort((a,b)=>a.min-b.min);
+  return {myGoals, oppGoals, events};
+}
+
+function penaltyShootout(){
+  const edge = clamp((sim.myAtk+sim.myDef - sim.currentMatch.oppRating*2)/45, -0.25, 0.25);
+  const myPk = 3 + Math.round(Math.random()*2);
+  let oppPk = 3 + Math.round(Math.random()*2);
+  if(Math.random() < 0.5+edge){ if(oppPk>=myPk) oppPk = Math.max(0, myPk-1); }
+  else { if(myPk<=oppPk) oppPk = myPk+1; }
+  return {myPk, oppPk};
+}
+
+function startTournament(){
+  sim = {
+    myAtk: attackRating(), myDef: defenseRating(),
+    queue: buildMatchQueue(), qIndex: 0,
+    currentMatch: null, currentResult: null,
+    aggregates: {}, // stageId -> {my, opp}
+    log: [], // finished match summaries for the log below the live viewer
+    wins:0, draws:0, losses:0, goalsFor:0, goalsAgainst:0, shutouts:0,
+    eliminated:false, eliminatedAt:null, champion:false,
+    speed: sim ? sim.speed : 'normal',
+  };
+  document.getElementById('sim-btn').style.display='none';
+  document.getElementById('skip-match-btn').style.display='inline-block';
+  document.getElementById('skip-all-btn').style.display='inline-block';
+  document.getElementById('next-match-btn').style.display='none';
+  playNextMatch();
+}
+
+function playNextMatch(){
+  if(sim.qIndex >= sim.queue.length || sim.eliminated){ finishTournament(); return; }
+  sim.currentMatch = sim.queue[sim.qIndex];
+  sim.currentResult = resolveGoals(sim.currentMatch.oppRating);
+  sim.animMinute = 0;
+  sim.animEvents = [...sim.currentResult.events];
+  sim.animDisplayed = [];
+  sim.renderedCount = 0;
+  renderLiveShell();
+  document.getElementById('skip-match-btn').disabled = false;
+  animateMatch();
+}
+
+function animateMatch(){
+  clearInterval(sim.timer);
+  const delay = SPEED_MS[sim.speed] || SPEED_MS.normal;
+  sim.timer = setInterval(()=>{
+    sim.animMinute++;
+    while(sim.animEvents.length && sim.animEvents[0].min<=sim.animMinute){
+      sim.animDisplayed.push(sim.animEvents.shift());
+    }
+    updateLiveView();
+    if(sim.animMinute>=90){
+      clearInterval(sim.timer);
+      onMatchFullTime();
+    }
+  }, delay);
+}
+
+function skipCurrentMatch(){
+  clearInterval(sim.timer);
+  sim.animMinute = 90;
+  sim.animDisplayed = [...sim.currentResult.events];
+  sim.animEvents = [];
+  updateLiveView();
+  onMatchFullTime();
+}
+
+function onMatchFullTime(){
+  const m = sim.currentMatch, r = sim.currentResult;
+  let needsPenalties = false;
+  let penalties = null;
+
+  if(m.kind==='group'){
+    if(r.myGoals>r.oppGoals) sim.wins++;
+    else if(r.myGoals===r.oppGoals) sim.draws++;
+    else sim.losses++;
+  } else if(m.kind==='sudden'){
+    if(r.myGoals===r.oppGoals){ needsPenalties = true; penalties = penaltyShootout(); }
+    const won = r.myGoals>r.oppGoals || (penalties && penalties.myPk>penalties.oppPk);
+    if(won) sim.wins++; else { sim.losses++; sim.eliminated=true; sim.eliminatedAt=m.stageLabel; }
+  } else if(m.kind==='agg'){
+    if(!sim.aggregates[m.stageId]) sim.aggregates[m.stageId] = {my:0, opp:0};
+    sim.aggregates[m.stageId].my += r.myGoals;
+    sim.aggregates[m.stageId].opp += r.oppGoals;
+    if(m.leg===m.legs){
+      const agg = sim.aggregates[m.stageId];
+      if(agg.my===agg.opp){ needsPenalties = true; penalties = penaltyShootout(); }
+      const won = agg.my>agg.opp || (penalties && penalties.myPk>penalties.oppPk);
+      if(won){ sim.wins++; if(m.stageId==='final') sim.champion=true; }
+      else { sim.losses++; sim.eliminated=true; sim.eliminatedAt=m.stageLabel; }
+    }
+  }
+
+  sim.goalsFor += r.myGoals;
+  sim.goalsAgainst += r.oppGoals;
+  if(r.oppGoals===0) sim.shutouts++;
+
+  sim.log.push({...m, myGoals:r.myGoals, oppGoals:r.oppGoals, penalties, agg: m.kind==='agg' ? {...sim.aggregates[m.stageId]} : null});
+  sim.qIndex++;
+  renderLiveFinal(penalties);
+
+  const isTieOver = m.kind!=='agg' || m.leg===m.legs;
+  document.getElementById('skip-match-btn').disabled = true;
+  if(sim.eliminated || sim.qIndex>=sim.queue.length){
+    document.getElementById('next-match-btn').textContent = 'Ver resultado final ▶';
+  } else {
+    document.getElementById('next-match-btn').textContent = 'Siguiente partido ▶';
+  }
+  document.getElementById('next-match-btn').style.display='inline-block';
+  document.getElementById('skip-match-btn').style.display = (sim.eliminated || sim.qIndex>=sim.queue.length) ? 'none' : 'inline-block';
+}
+
+function renderLiveShell(){
+  const m = sim.currentMatch;
+  const legNote = m.legs===2 ? ` · ${m.leg===1?'Ida':'Vuelta'}` : '';
+  const aggNote = (m.kind==='agg' && m.leg===2)
+    ? `<div class="agg-note">Global ida: ${sim.aggregates[m.stageId] ? sim.aggregates[m.stageId].my : 0} - ${sim.aggregates[m.stageId] ? sim.aggregates[m.stageId].opp : 0}</div>` : '';
+  document.getElementById('sim-area').innerHTML = `
+    <div class="live-match">
+      <div class="live-head"><div class="live-stage">${m.stageLabel}${legNote}</div><div class="live-leg" id="live-minute">0'</div></div>
+      <div class="live-score">
+        <div class="team-name">${crestHTML('Tu Once', 30)}<div>Tu Once</div></div>
+        <div><span id="live-my">0</span> - <span id="live-opp">0</span></div>
+        <div class="team-name">${crestHTML(m.rivalName, 30)}<div>${m.rivalName}</div></div>
+      </div>
+      <div class="live-clock"><div class="bar"><div class="bar-fill" id="live-bar"></div></div></div>
+      <div class="live-feed" id="live-feed"></div>
+      ${aggNote}
+    </div>
+    <div class="stage-log-title">Partidos jugados</div>
+    <div class="results-list" id="log-list">${renderLogRows()}</div>
+  `;
+}
+
+function updateLiveView(){
+  document.getElementById('live-minute').textContent = sim.animMinute + "'";
+  document.getElementById('live-bar').style.width = (sim.animMinute/90*100)+'%';
+  const myCount = sim.animDisplayed.filter(e=>e.mine).length;
+  const oppCount = sim.animDisplayed.filter(e=>!e.mine).length;
+  document.getElementById('live-my').textContent = myCount;
+  document.getElementById('live-opp').textContent = oppCount;
+
+  const feed = document.getElementById('live-feed');
+  while(sim.renderedCount < sim.animDisplayed.length){
+    const e = sim.animDisplayed[sim.renderedCount];
+    const row = document.createElement('div');
+    row.className = 'live-event';
+    const nameSpan = `<span class="${e.mine ? 'goal-shake' : ''}">${e.name}</span>`;
+    const label = e.mine
+      ? `⚽ ${nameSpan} (Tu Once)`
+      : `⚽ ${nameSpan} ${crestHTML(sim.currentMatch.rivalName, 16)}`;
+    row.innerHTML = `<span class="min">${e.min}'</span><span>${label}</span>`;
+    feed.insertBefore(row, feed.firstChild);
+    sim.renderedCount++;
+  }
+}
+
+function renderLiveFinal(penalties){
+  const m = sim.currentMatch, r = sim.currentResult;
+  document.getElementById('live-minute').textContent = "90' — Final";
+  let extra = '';
+  if(penalties){
+    extra = `<div class="agg-note">Penales: ${penalties.myPk} - ${penalties.oppPk}</div>`;
+  }
+  if(m.kind==='agg' && m.leg===m.legs){
+    const agg = sim.aggregates[m.stageId];
+    extra += `<div class="agg-note">Marcador global: ${agg.my} - ${agg.opp}</div>`;
+  }
+  document.getElementById('sim-area').querySelector('.live-match').insertAdjacentHTML('beforeend', extra);
+  document.getElementById('log-list').innerHTML = renderLogRows();
+
+  if(sim.eliminated){
+    document.getElementById('sim-area').insertAdjacentHTML('beforeend', `
+      <div class="elim-banner">
+        <h2>Eliminado en ${sim.eliminatedAt}</h2>
+        <p>Récord: ${sim.wins}V ${sim.draws}E ${sim.losses}D · Goles a favor: ${sim.goalsFor} · en contra: ${sim.goalsAgainst}</p>
+      </div>
+    `);
+  }
+}
+
+function renderLogRows(){
+  return sim.log.map(m=>{
+    const lossClass = (m.myGoals<m.oppGoals && m.kind!=='agg') || (m.kind==='agg' && m.leg===m.legs && m.agg && m.agg.my<m.agg.opp) ? ' loss' : '';
+    const legNote = m.legs===2 ? ` (${m.leg===1?'Ida':'Vuelta'})` : '';
+    const pk = m.penalties ? ` · Penales ${m.penalties.myPk}-${m.penalties.oppPk}` : '';
+    return `<div class="match-row${lossClass}">
+      <div style="display:flex; align-items:center; gap:10px;">${crestHTML(m.rivalName, 28)}
+        <div><div class="stage">${m.stageLabel}${legNote}</div><div class="vs">Tu Once vs. ${m.rivalName}${pk}</div></div>
+      </div>
+      <div class="score">${m.myGoals} - ${m.oppGoals}</div>
+    </div>`;
+  }).reverse().join('');
+}
+
+function finishTournament(){
+  const perfect = sim.champion && sim.goalsAgainst===0;
+  const record = `${sim.wins}V ${sim.draws}E ${sim.losses}D`;
+  let headline;
+  if(sim.champion) headline = perfect ? '¡7 a 0 perfecto! Campeón invicto sin gol recibido' : '¡Campeón del torneo!';
+  else headline = `Eliminado en ${sim.eliminatedAt}`;
+
+  const replayLabel = sim.champion ? '🔁 Jugar torneo de nuevo' : '🔄 Reintentar torneo';
+  const saveBtn = sim.champion ? `<button class="btn primary" id="save-image-btn">📸 Guardar alineación (JPG)</button>` : '';
+
+  document.getElementById('sim-area').innerHTML = `
+    <div class="stage-log-title">Resumen del torneo</div>
+    <div class="results-list">${renderLogRows()}</div>
+    <div class="verdict" style="${sim.champion ? '' : 'border-color:var(--red);'}">
+      <h2 style="${sim.champion ? '' : 'color:var(--red-bright);'}">${headline}</h2>
+      <p>Récord: ${record} · Goles a favor: ${sim.goalsFor} · Goles en contra: ${sim.goalsAgainst} · Vallas en cero: ${sim.shutouts}</p>
+      <p>Ataque: ${Math.round(sim.myAtk)} · Defensa: ${Math.round(sim.myDef)}</p>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+        ${saveBtn}
+        <button class="btn primary" id="retry-btn">${replayLabel}</button>
+        <button class="btn ghost" id="new-squad-btn">🗑️ Nueva plantilla desde cero</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('skip-match-btn').style.display='none';
+  document.getElementById('skip-all-btn').style.display='none';
+  document.getElementById('next-match-btn').style.display='none';
+  document.getElementById('sim-btn').style.display='none';
+
+  if(sim.champion) document.getElementById('save-image-btn').onclick = downloadLineupImage;
+  document.getElementById('retry-btn').onclick = startTournament;
+  document.getElementById('new-squad-btn').onclick = ()=>{ if(confirm('¿Reiniciar todo el draft y armar una plantilla nueva desde cero?')) resetAll(true); };
+}
+
+function skipToEnd(){
+  clearInterval(sim.timer);
+  while(sim.qIndex < sim.queue.length && !sim.eliminated){
+    sim.currentMatch = sim.queue[sim.qIndex];
+    sim.currentResult = resolveGoals(sim.currentMatch.oppRating);
+    sim.animDisplayed = [...sim.currentResult.events];
+    onMatchFullTime();
+  }
+  finishTournament();
+}
+
+document.querySelectorAll('.speed-btn').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.speed-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    if(sim) sim.speed = b.dataset.speed;
+    else { sim = sim || {}; sim.speed = b.dataset.speed; }
+  };
+});
+
+document.getElementById('sim-btn').onclick = startTournament;
+document.getElementById('skip-match-btn').onclick = skipCurrentMatch;
+document.getElementById('skip-all-btn').onclick = skipToEnd;
+document.getElementById('next-match-btn').onclick = ()=>{
+  document.getElementById('next-match-btn').style.display='none';
+  playNextMatch();
+};
+
+/* ---------------- LINEUP IMAGE EXPORT ---------------- */
+function roundRectPath(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function wrapCenteredText(ctx,text,cx,y,maxWidth,lineHeight){
+  const words = text.split(' ');
+  let line = '';
+  const lines = [];
+  words.forEach(w=>{
+    const test = line ? line+' '+w : w;
+    if(ctx.measureText(test).width > maxWidth && line){ lines.push(line); line = w; }
+    else line = test;
+  });
+  if(line) lines.push(line);
+  lines.forEach((l,i)=> ctx.fillText(l, cx, y + i*lineHeight));
+  return lines.length;
+}
+
+function downloadLineupImage(){
+  const W = 960, H = 1280;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // background: pitch stripes
+  ctx.fillStyle = '#0a2e22';
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  for(let x=0; x<W; x+=120){ if((x/120)%2===0) ctx.fillRect(x,0,60,H); }
+  ctx.strokeStyle = 'rgba(245,243,236,0.18)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(24,24,W-48,H-48);
+
+  // header
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#f0c34a';
+  ctx.font = 'bold 64px Arial, sans-serif';
+  ctx.fillText('MX 7-0', W/2, 100);
+  ctx.fillStyle = '#c9d6cd';
+  ctx.font = '20px "Courier New", monospace';
+  const subtitle = (sim && sim.champion) ? `CAMPEÓN · Formación ${state.formation}` : `Formación ${state.formation}`;
+  ctx.fillText(subtitle, W/2, 132);
+  const teamAvg = Math.round(state.filled.reduce((a,p)=>a+p.rat,0)/state.filled.length);
+  ctx.fillStyle = '#d4a72c';
+  ctx.font = 'bold 18px "Courier New", monospace';
+  ctx.fillText(`PROMEDIO DE PLANTILLA: ${teamAvg}`, W/2, 160);
+
+  // rows top(delanteros) to bottom(portero), mirroring the on-screen pitch
+  const order = ['DEL','MED','DEF','POR'];
+  let y = 235;
+  order.forEach(pos=>{
+    const players = state.filled.filter(p=>p.pos===pos);
+    if(players.length===0) return;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#d4a72c';
+    ctx.font = 'bold 15px "Courier New", monospace';
+    ctx.fillText(POS_LABEL[pos].toUpperCase(), W/2, y-18);
+
+    const boxW = 190, boxH = 100, gap = 18;
+    const n = players.length;
+    const totalW = n*boxW + (n-1)*gap;
+    let x = (W-totalW)/2;
+    players.forEach(p=>{
+      ctx.fillStyle = '#123c2c';
+      roundRectPath(ctx, x, y, boxW, boxH, 10);
+      ctx.fill();
+      ctx.strokeStyle = '#d4a72c';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // team crest (colored circle + initials)
+      const st = findTeamStyle(p.team);
+      const cx = x + 24, cy = y + 22, cr = 14;
+      ctx.beginPath();
+      ctx.arc(cx, cy, cr, 0, Math.PI*2);
+      ctx.fillStyle = st.color;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 10px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(st.short, cx, cy+4);
+
+      ctx.fillStyle = '#f5f3ec';
+      ctx.font = 'bold 17px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      const lines = wrapCenteredText(ctx, p.name, x+boxW/2, y+28, boxW-24, 20);
+      ctx.fillStyle = '#f0c34a';
+      ctx.font = '12px "Courier New", monospace';
+      ctx.fillText(p.team, x+boxW/2, y+28 + lines*20 + 12);
+      ctx.fillStyle = '#f0c34a';
+      ctx.font = 'bold 24px "Anton", Arial, sans-serif';
+      ctx.fillText(`${Math.round(p.rat)}`, x+boxW/2, y+boxH-12);
+
+      x += boxW + gap;
+    });
+    y += boxH + 55;
+  });
+
+  // footer stats
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#c9d6cd';
+  ctx.font = '16px "Courier New", monospace';
+  if(sim){
+    ctx.fillText(`Récord: ${sim.wins}V ${sim.draws}E ${sim.losses}D  ·  GF ${sim.goalsFor} - GC ${sim.goalsAgainst}`, W/2, H-70);
+  }
+  ctx.font = '13px "Courier New", monospace';
+  ctx.fillStyle = 'rgba(201,214,205,0.6)';
+  ctx.fillText('Draft de campeones · Liga MX', W/2, H-40);
+
+  const link = document.createElement('a');
+  link.download = 'mx7a0-alineacion.jpg';
+  link.href = canvas.toDataURL('image/jpeg', 0.92);
+  link.click();
+}
+
+/* ---------------- INIT ---------------- */
+function renderAll(){ renderPitch(); }
+renderAll();
+</script>
+</body>
+</html>

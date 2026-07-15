@@ -19,25 +19,39 @@ const CHAMPIONS = [
 
 // Stylized club badges (colors + initials) — not official crests/logos.
 const TEAM_STYLE = {
-  "Pachuca": {short:"PAC", color:"#003DA5"},
-  "Toluca": {short:"TOL", color:"#D2001C"},
-  "Pumas UNAM": {short:"PUM", color:"#0C2340"},
-  "América": {short:"AME", color:"#F2C200"},
-  "Santos Laguna": {short:"SAN", color:"#1C7A3E"},
-  "Monterrey": {short:"MTY", color:"#003DA5"},
-  "Tigres UANL": {short:"TIG", color:"#FF6A00"},
-  "Chivas": {short:"CHI", color:"#A5122A"},
-  "Cruz Azul": {short:"CAZ", color:"#0033A0"},
-  "Atlas": {short:"ATL", color:"#B01E2C"},
+  "Pachuca":          {short:"PAC", color:"#003DA5", text:"#5B9BFF"},
+  "Toluca":           {short:"TOL", color:"#D2001C", text:"#FF5C5C"},
+  "Pumas UNAM":       {short:"PUM", color:"#0C2340", text:"#93A9FF"},
+  "América":          {short:"AME", color:"#F2C200", text:"#FFD447"},
+  "Santos Laguna":    {short:"SAN", color:"#1C7A3E", text:"#4ADE80"},
+  "Monterrey":        {short:"MTY", color:"#003DA5", text:"#38BDF8"},
+  "Tigres UANL":      {short:"TIG", color:"#FF6A00", text:"#FFA24C"},
+  "Chivas":           {short:"CHI", color:"#A5122A", text:"#F4736B"},
+  "Cruz Azul":        {short:"CAZ", color:"#0033A0", text:"#6C8CFF"},
+  "Atlas":            {short:"ATL", color:"#B01E2C", text:"#E0665B"},
+  "Atlante":          {short:"ATE", color:"#123E7C", text:"#5AA9E6"},
+  "León":             {short:"LEO", color:"#046A38", text:"#34D399"},
+  "Monarcas Morelia": {short:"MOR", color:"#4B2E83", text:"#C084FC"},
+  "Necaxa":           {short:"NEC", color:"#C8102E", text:"#FF7B7B"},
+  "Tijuana":          {short:"TIJ", color:"#7A1F1F", text:"#FF8B5E"},
+  "Puebla":           {short:"PUE", color:"#003876", text:"#7FB8FF"},
+  "Querétaro":        {short:"QRO", color:"#1B1B1B", text:"#B8B8B8"},
+  "Veracruz":         {short:"VER", color:"#8C1D18", text:"#FF9E80"},
+  "San Luis":         {short:"SLU", color:"#C8102E", text:"#FF8A8A"},
+  "Xolos":            {short:"XOL", color:"#7A1F1F", text:"#FF8B5E"},
 };
 function findTeamStyle(name){
   const key = Object.keys(TEAM_STYLE).find(k => name && name.includes(k));
   if(key) return TEAM_STYLE[key];
-  return {short:(name||"?").replace(/[^A-Za-zÀ-ÿ]/g,'').slice(0,3).toUpperCase() || "?", color:"#5a6b62"};
+  return {short:(name||"?").replace(/[^A-Za-zÀ-ÿ]/g,'').slice(0,3).toUpperCase() || "?", color:"#5a6b62", text:"#c9d6cd"};
 }
 function crestHTML(team, size){
   const st = findTeamStyle(team);
   return `<span class="crest-badge" style="width:${size}px;height:${size}px;background:${st.color};font-size:${Math.round(size*0.34)}px;">${st.short}</span>`;
+}
+function teamNameHTML(team){
+  const st = findTeamStyle(team);
+  return `<span style="color:${st.text};">${team}</span>`;
 }
 
 // Each formation maps a broad category (POR/DEF/MED/DEL — matches the player
@@ -62,6 +76,7 @@ let state = {
   needed: {...FORMATIONS["4-3-3"]},
   filled: [],          // {pos, name, team}
   usedTeams: new Set(),
+  usedPlayers: new Set(), // player names already drafted, across any squad/year
   currentRoll: null,   // champion object
   rerolls: 3,
 };
@@ -97,7 +112,7 @@ function renderPitch(){
       slot.className = 'slot' + (p ? ' filled':'');
       const tag = (p && p.label) ? p.label : label;
       if(p){
-        slot.innerHTML = `<div class="pos-tag">${tag}</div>${crestHTML(p.team, 22)}<div class="p-name">${p.name}</div><div class="p-team">${p.team}</div>`;
+        slot.innerHTML = `<div class="pos-tag">${tag}</div>${crestHTML(p.team, 22)}<div class="p-name">${p.name}</div><div class="p-team">${teamNameHTML(p.team)}</div>`;
       } else {
         slot.innerHTML = `<div class="pos-tag">${tag}</div><div class="p-name" style="color:var(--chalk-dim)">—</div>`;
       }
@@ -128,7 +143,7 @@ function renderSquadList(){
     <div class="squad-row">
       <div style="display:flex; align-items:center; gap:8px;">
         ${crestHTML(p.team, 26)}
-        <div><span class="sq-pos">${p.label || POS_LABEL[p.pos]} · ${p.team}</span><span class="sq-name">${p.name}</span></div>
+        <div><span class="sq-pos">${p.label || POS_LABEL[p.pos]} · ${teamNameHTML(p.team)}</span><span class="sq-name">${p.name}</span></div>
       </div>
       <div class="sq-rat">${Math.round(p.rat)}</div>
     </div>
@@ -157,7 +172,7 @@ function rollTeam(){
   const openPositions = Object.keys(remPos).filter(p=>remPos[p]>0);
   const available = CHAMPIONS.filter(c=>{
     if(state.usedTeams.has(c.team+c.tourney)) return false;
-    return c.players.some(pl=>openPositions.includes(pl.pos));
+    return c.players.some(pl=>openPositions.includes(pl.pos) && !state.usedPlayers.has(pl.name));
   });
   if(available.length===0){
     document.getElementById('roll-area').innerHTML = `<p class="hint">No quedan planteles disponibles con jugadores para las posiciones abiertas.</p>`;
@@ -167,15 +182,16 @@ function rollTeam(){
   state.currentRoll = pick;
   renderRoll(openPositions);
   document.getElementById('reroll-btn').disabled = state.rerolls<=0;
+  document.getElementById('roll-btn').disabled = true;
 }
 
 function renderRoll(openPositions){
   const c = state.currentRoll;
   const area = document.getElementById('roll-area');
-  const eligible = c.players.filter(p=>openPositions.includes(p.pos));
+  const eligible = c.players.filter(p=>openPositions.includes(p.pos) && !state.usedPlayers.has(p.name));
   let html = `<div class="roll-card">
     ${crestHTML(c.team, 52)}
-    <div class="info"><div class="team">${c.team}</div><div class="tourney">${c.tourney} · Campeón</div></div>
+    <div class="info"><div class="team">${teamNameHTML(c.team)}</div><div class="tourney">${c.tourney} · Campeón</div></div>
   </div>
   <p class="hint">Elige un jugador de esta plantilla para una posición abierta:</p>
   <div class="player-grid">`;
@@ -185,7 +201,7 @@ function renderRoll(openPositions){
     const alreadyFilled = state.filled.filter(x=>x.pos===p.pos).length;
     const slotLabel = labels[alreadyFilled] || POS_LABEL[p.pos];
     html += `<div class="player-card" onclick="pickPlayer('${p.name.replace(/'/g,"\\'")}')">
-      <div><div class="pname">${p.name}</div><div class="ppos">${slotLabel} · ${c.team}</div></div>
+      <div><div class="pname">${p.name}</div><div class="ppos">${slotLabel} · ${teamNameHTML(c.team)}</div></div>
       <div class="prat">${p.rat}</div>
     </div>`;
   });
@@ -203,10 +219,12 @@ function pickPlayer(name){
   const label = labels[alreadyFilled] || POS_LABEL[p.pos];
   state.filled.push({pos:p.pos, label, name:p.name, team:c.team, rat:p.rat});
   state.usedTeams.add(c.team+c.tourney);
+  state.usedPlayers.add(p.name);
   state.currentRoll = null;
   state.rerolls = 3;
-  document.getElementById('roll-area').innerHTML = `<p class="hint">✓ ${p.name} (${c.team}) fichado. Tira de nuevo para la siguiente posición.</p>`;
+  document.getElementById('roll-area').innerHTML = `<p class="hint">✓ ${p.name} (${teamNameHTML(c.team)}) fichado. Tira de nuevo para la siguiente posición.</p>`;
   document.getElementById('reroll-btn').disabled = true;
+  document.getElementById('roll-btn').disabled = false;
   renderPitch();
 }
 
@@ -226,12 +244,14 @@ document.getElementById('reset-btn').onclick = ()=>{ if(confirm('¿Reiniciar tod
 function resetAll(rerender){
   state.filled = [];
   state.usedTeams = new Set();
+  state.usedPlayers = new Set();
   state.currentRoll = null;
   state.rerolls = 3;
   if(sim && sim.timer) clearInterval(sim.timer);
   sim = null;
   document.getElementById('reroll-count').textContent = 3;
   document.getElementById('reroll-btn').disabled = true;
+  document.getElementById('roll-btn').disabled = false;
   document.getElementById('roll-area').innerHTML = `<p class="hint">Tira el dado para que aparezca un plantel campeón.</p>`;
   document.getElementById('sim-area').innerHTML = `<p class="hint">Completa las 11 posiciones para poder simular. Formato: repechaje (partido único) → cuartos, semifinal y final a ida y vuelta.</p>`;
   document.getElementById('sim-btn').style.display='inline-block';
@@ -288,7 +308,12 @@ const STAGE_DEFS = [
   {id:"semis", label:"Semifinal", kind:"agg", legs:2, oppBase:[85,93]},
   {id:"final", label:"Final", kind:"agg", legs:2, oppBase:[88,95]},
 ];
-const RIVALS = ["Cruz Azul '97","Chivas 2006","Tigres 2019","Necaxa '98","León 2020","América 2013","Monterrey 2019","Pachuca '99","Xolos 2012","Puebla '90"];
+const RIVALS = [
+  "Cruz Azul '97", "Chivas 2006", "Tigres 2019", "Necaxa '98", "León 2020",
+  "América 2013", "Monterrey 2019", "Pachuca '99", "Xolos 2012", "Puebla '90",
+  "Toluca 2010", "Santos 2015", "Pumas 2011", "Atlas 2021", "Morelia 2000",
+  "Atlante 2007", "Querétaro 2016", "Veracruz 2004",
+];
 const SPEED_MS = {slow:170, normal:65, fast:14};
 
 let sim = null; // active tournament state
@@ -312,8 +337,8 @@ function buildMatchQueue(){
 
 function resolveGoals(oppRating){
   const myAtk = sim.myAtk, myDef = sim.myDef;
-  const myLambda  = clamp(0.25 + (myAtk - oppRating)/22, 0.15, 3.6);
-  const oppLambda = clamp(0.25 + (oppRating - myDef)/22, 0.1, 3.2);
+  const myLambda  = clamp(1.5 + (myAtk - oppRating)/16, 0.35, 4.5);
+  const oppLambda = clamp(1.2 + (oppRating - myDef)/16, 0.3, 3.8);
   const myGoals = poissonSample(myLambda);
   const oppGoals = poissonSample(oppLambda);
   const myMinutes = Array.from({length:myGoals}, ()=>({min:Math.floor(Math.random()*90)+1, mine:true, name:pickScorer()}));
@@ -443,7 +468,7 @@ function renderLiveShell(){
       <div class="live-score">
         <div class="team-name">${crestHTML('Tu Once', 30)}<div>Tu Once</div></div>
         <div><span id="live-my">0</span> - <span id="live-opp">0</span></div>
-        <div class="team-name">${crestHTML(m.rivalName, 30)}<div>${m.rivalName}</div></div>
+        <div class="team-name">${crestHTML(m.rivalName, 30)}<div>${teamNameHTML(m.rivalName)}</div></div>
       </div>
       <div class="live-clock"><div class="bar"><div class="bar-fill" id="live-bar"></div></div></div>
       <div class="live-feed" id="live-feed"></div>
@@ -467,7 +492,10 @@ function updateLiveView(){
     const e = sim.animDisplayed[sim.renderedCount];
     const row = document.createElement('div');
     row.className = 'live-event';
-    const nameSpan = `<span class="${e.mine ? 'goal-shake' : ''}">${e.name}</span>`;
+    const rivalSt = findTeamStyle(sim.currentMatch.rivalName);
+    const nameSpan = e.mine
+      ? `<span class="goal-shake">${e.name}</span>`
+      : `<span class="goal-shake" style="color:${rivalSt.text};">${e.name}</span>`;
     const label = e.mine
       ? `⚽ ${nameSpan} (Tu Once)`
       : `⚽ ${nameSpan} ${crestHTML(sim.currentMatch.rivalName, 16)}`;
@@ -508,7 +536,7 @@ function renderLogRows(){
     const pk = m.penalties ? ` · Penales ${m.penalties.myPk}-${m.penalties.oppPk}` : '';
     return `<div class="match-row${lossClass}">
       <div style="display:flex; align-items:center; gap:10px;">${crestHTML(m.rivalName, 28)}
-        <div><div class="stage">${m.stageLabel}${legNote}</div><div class="vs">Tu Once vs. ${m.rivalName}${pk}</div></div>
+        <div><div class="stage">${m.stageLabel}${legNote}</div><div class="vs">Tu Once vs. ${teamNameHTML(m.rivalName)}${pk}</div></div>
       </div>
       <div class="score">${m.myGoals} - ${m.oppGoals}</div>
     </div>`;
@@ -641,7 +669,7 @@ function downloadLineupImage(){
     ctx.font = 'bold 15px "Courier New", monospace';
     ctx.fillText(POS_LABEL[pos].toUpperCase(), W/2, y-18);
 
-    const boxW = 190, boxH = 100, gap = 18;
+    const boxW = 190, boxH = 150, gap = 18;
     const n = players.length;
     const totalW = n*boxW + (n-1)*gap;
     let x = (W-totalW)/2;
@@ -653,9 +681,9 @@ function downloadLineupImage(){
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // team crest (colored circle + initials)
+      // team crest (colored circle + initials) — top-left corner
       const st = findTeamStyle(p.team);
-      const cx = x + 24, cy = y + 22, cr = 14;
+      const cx = x + 22, cy = y + 20, cr = 13;
       ctx.beginPath();
       ctx.arc(cx, cy, cr, 0, Math.PI*2);
       ctx.fillStyle = st.color;
@@ -664,25 +692,31 @@ function downloadLineupImage(){
       ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 10px Arial, sans-serif';
+      ctx.font = 'bold 9px Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(st.short, cx, cy+4);
+      ctx.fillText(st.short, cx, cy+3);
 
+      // specific slot label — top-right corner, same row as the crest
       ctx.fillStyle = '#d4a72c';
       ctx.font = 'bold 11px "Courier New", monospace';
       ctx.textAlign = 'right';
-      ctx.fillText(p.label || POS_LABEL[p.pos], x+boxW-10, y+18);
+      ctx.fillText(p.label || POS_LABEL[p.pos], x+boxW-12, cy+4);
 
+      // name (well clear of the crest/label row), team, rating — spaced to
+      // never collide even when the name wraps to two lines.
       ctx.fillStyle = '#f5f3ec';
       ctx.font = 'bold 17px Arial, sans-serif';
       ctx.textAlign = 'center';
-      const lines = wrapCenteredText(ctx, p.name, x+boxW/2, y+28, boxW-24, 20);
-      ctx.fillStyle = '#f0c34a';
+      const nameY = y + 54;
+      const lineHeight = 19;
+      const lines = wrapCenteredText(ctx, p.name, x+boxW/2, nameY, boxW-24, lineHeight);
+      ctx.fillStyle = st.text;
       ctx.font = '12px "Courier New", monospace';
-      ctx.fillText(p.team, x+boxW/2, y+28 + lines*20 + 12);
+      const teamY = nameY + lines*lineHeight + 18;
+      ctx.fillText(p.team, x+boxW/2, teamY);
       ctx.fillStyle = '#f0c34a';
       ctx.font = 'bold 24px "Anton", Arial, sans-serif';
-      ctx.fillText(`${Math.round(p.rat)}`, x+boxW/2, y+boxH-12);
+      ctx.fillText(`${Math.round(p.rat)}`, x+boxW/2, y+boxH-16);
 
       x += boxW + gap;
     });

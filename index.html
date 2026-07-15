@@ -13,7 +13,7 @@
 <header>
   <div class="eyebrow">Draft Liga MX</div>
   <h1>MX <span>7</span>-<span>0</span></h1>
-  <p class="subhead">Sortea campeones de la era moderna de la Liga MX (1996–2025), arma tu once histórico y simula un torneo. ¿Puedes cerrarlo 7 a 0?</p>
+  <p class="subhead">Sortea campeones de la era moderna de la Liga MX (1996–2026), arma tu once histórico y simula un torneo. ¿Puedes cerrarlo 7 a 0?</p>
 </header>
 
 <div class="wrap">
@@ -29,6 +29,7 @@
       <div class="pitch" id="pitch"></div>
       <div class="squad-list" id="squad-list"></div>
     </div>
+    <div class="hint" id="swap-hint" style="margin-top:10px;">Toca a un jugador ya colocado para seleccionarlo, luego toca otra casilla de su misma posición (DEL/MED/DEF/POR) para intercambiarlos.</div>
   </section>
 
   <section>
@@ -54,9 +55,9 @@
       </div>
       <div class="draft-actions">
         <button class="btn primary" id="sim-btn" disabled>Iniciar torneo</button>
-        <button class="btn ghost" id="skip-match-btn" style="display:none;">Saltar partido ⏭</button>
-        <button class="btn ghost" id="skip-all-btn" style="display:none;">Saltar al resultado final ⏩</button>
-        <button class="btn ghost" id="next-match-btn" style="display:none;">Siguiente partido ▶</button>
+        <button class="btn ghost" id="skip-match-btn" style="display:none;">Saltar partido ››</button>
+        <button class="btn ghost" id="skip-all-btn" style="display:none;">Saltar al resultado final ›››</button>
+        <button class="btn ghost" id="next-match-btn" style="display:none;">Siguiente partido ›</button>
       </div>
       <div id="sim-area"><p class="hint">Completa las 11 posiciones para poder simular. Formato: repechaje (partido único) → cuartos, semifinal y final a ida y vuelta.</p></div>
     </div>
@@ -64,7 +65,7 @@
 
 </div>
 
-<footer>Datos: campeones y jugadores destacados de la Liga MX 1996–2025 (set inicial, ampliable) · Prototipo — no oficial</footer>
+<footer>Datos: campeones y jugadores destacados de la Liga MX 1996–2026 (set inicial, ampliable) · Prototipo — no oficial</footer>
 
 <script type="module" src="script.js"></script>
 </body>

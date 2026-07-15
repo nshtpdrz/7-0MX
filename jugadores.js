@@ -1065,7 +1065,7 @@ players:[
 },
 
 {
-team:"Tigres",
+team:"Tigres UANL",
 tourney:"Apertura 2015",
 players:[
 
@@ -1463,7 +1463,7 @@ players:[
 },
 
 {
-team:"Tigres",
+team:"Tigres UANL",
 tourney:"Clausura 2023",
 players:[
 
